@@ -1,0 +1,3 @@
+
+
+insert  into `sys_config`(`id`,`param_key`,`param_value`,`status`,`remark`) values (70,'WxMpAppId','wxa111c6f570231112',1,'微信公众号AppId'),(71,'WxMpSecret','WX_MP_SECRET_PLACEHOLDER',1,'微信公众号密钥'),(72,'iosClose','0',1,'IOS机型虚拟支付相关功能 0关闭1开启'),(73,'tencentSecretId','TENCENT_SECRET_ID_PLACEHOLDER',1,'腾讯云SecretId'),(74,'tencentSecretKey','TENCENT_SECRET_KEY_PLACEHOLDER',1,'腾讯云SecretKey'),(75,'tencentSmsRegion','ap-beijing',1,'腾讯云短信地域'),(76,'tencentSmsSdkAppId','1400111253',1,'腾讯云短信SdkAppId'),(77,'tencentSmsSignName','林风科技',1,'腾讯云短信签名'),(78,'tencentSmsTemplateId','2011139',1,'腾讯云短信模板ID'),(79,'chooseSms','0',1,'选择的短信厂商0阿里1腾讯');

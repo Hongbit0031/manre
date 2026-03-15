@@ -1,0 +1,12 @@
+.DS_Store
+.idea/
+.vscode/
+linfeng-community-vue/node_modules/
+linfeng-community-vue/dist/
+linfeng-community-backend/target/
+linfeng-community-uniapp/unpackage/
+linfeng-community-uniapp/.hbuilderx/
+ops/deploy/.deploy.env
+ops/deploy/.deploy.local.env
+ops/deploy/out/
+*.log

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.linfeng.modules.app.dao.PostCollectionDao">
+
+    <resultMap type="io.linfeng.modules.app.entity.PostCollectionEntity" id="postCollectionMap">
+        <result property="uid" column="uid"/>
+        <result property="postId" column="post_id"/>
+    </resultMap>
+
+    <select id="findBatchCollectCount" parameterType="java.util.List" resultType="io.linfeng.common.vo.app.PostCountResponse">
+        SELECT COUNT(uid) as number,post_id as postId FROM lf_post_collection WHERE post_id IN
+        <foreach collection="list" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+        GROUP BY post_id ORDER BY FIELD(post_id,
+        <foreach collection="list" item="postId" separator="," close=")">
+            #{postId}
+        </foreach>
+    </select>
+
+    <select id="findIsCollectBatch" parameterType="java.lang.Object" resultType="io.linfeng.common.vo.app.PostIsCollectionResponse">
+        SELECT post_id AS postId,uid FROM lf_post_collection WHERE uid=#{uid} and post_id IN
+        <foreach collection="list" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+
+    </select>
+
+</mapper>

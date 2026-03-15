@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.linfeng.modules.admin.dao.ActiveUserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.linfeng.modules.admin.entity.ActiveUserEntity" id="activeUserMap">
+        <result property="id" column="id"/>
+        <result property="ip" column="ip"/>
+        <result property="uid" column="uid"/>
+        <result property="activeCount" column="active_count"/>
+        <result property="terminal" column="terminal"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="address" column="address"/>
+    </resultMap>
+
+
+</mapper>

@@ -1,0 +1,1 @@
+insert  into `schedule_job`(`job_id`,`bean_name`,`params`,`cron_expression`,`status`,`remark`,`create_time`) values (7,'databaseBackupTask','0','0 0 2 * * ?',1,'数据库备份任务','2025-07-08 14:30:16');

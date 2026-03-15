@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.linfeng.modules.admin.dao.UserRechargeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.linfeng.modules.admin.entity.UserRechargeEntity" id="userRechargeMap">
+        <result property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="nickname" column="nickname"/>
+        <result property="orderId" column="order_id"/>
+        <result property="price" column="price"/>
+        <result property="givePrice" column="give_price"/>
+        <result property="rechargeType" column="recharge_type"/>
+        <result property="paid" column="paid"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="addTime" column="add_time"/>
+        <result property="refundPrice" column="refund_price"/>
+    </resultMap>
+
+
+</mapper>

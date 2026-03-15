@@ -1,0 +1,1752 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>林风社交论坛项目部署文档</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2b;--panel2:#0f1727;--text:#e8edf7;--muted:#9fb0d0;--line:#24314f;--accent:#6ea8fe;--accent2:#9dd1ff;--code:#0a1220;--chip:#17243d;}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,#0a1020,#0d1424 20%,#0c1220);color:var(--text)}
+a{color:var(--accent2);text-decoration:none} a:hover{text-decoration:underline}
+.layout{display:grid;grid-template-columns:320px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;overflow:auto;padding:22px 18px;border-right:1px solid var(--line);background:rgba(10,16,32,.92);backdrop-filter:blur(10px)}
+.brand{font-size:22px;font-weight:800;line-height:1.25;margin:4px 0 8px}
+.meta{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:14px}
+.search{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--text);outline:none}
+.search:focus{border-color:var(--accent)}
+.nav{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.nav-group{padding:10px 10px 8px;border:1px solid transparent;border-radius:14px;background:rgba(255,255,255,.02)}
+.nav-group:hover{border-color:var(--line);background:rgba(255,255,255,.03)}
+.nav-link{display:block;font-weight:700;color:#fff;line-height:1.45}
+.sublink{display:block;color:var(--muted);font-size:13px;line-height:1.45;margin-top:6px;padding-left:10px;border-left:2px solid #20304d}
+.level-h2{font-weight:600} .level-h3,.level-h4{font-size:12px}
+.main{padding:34px min(4vw,40px) 64px}
+.hero{padding:24px 28px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(110,168,254,.12),rgba(255,255,255,.03));margin-bottom:24px;box-shadow:0 20px 60px rgba(0,0,0,.18)}
+.hero h1{margin:0 0 10px;font-size:34px;line-height:1.15}
+.hero p{margin:0;color:var(--muted);line-height:1.8}
+.doc-section{max-width:980px;padding:28px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.03);margin-bottom:20px;box-shadow:0 12px 36px rgba(0,0,0,.12)}
+.doc-section>h1{margin:0 0 18px;font-size:30px}
+.doc-section h2{margin-top:28px;font-size:24px} .doc-section h3{margin-top:22px;font-size:20px} .doc-section h4{margin-top:18px;font-size:17px}
+.doc-section p,.doc-section li{line-height:1.85;color:#ecf2ff} .doc-section hr{border:none;border-top:1px solid var(--line);margin:24px 0}
+.doc-section blockquote{margin:16px 0;padding:14px 16px;border-left:4px solid var(--accent);background:rgba(110,168,254,.08);border-radius:12px;color:#eef5ff}
+.doc-section code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:var(--chip);padding:2px 7px;border-radius:8px;border:1px solid #23355a;font-size:.95em}
+.doc-section pre{background:var(--code);padding:16px;border:1px solid var(--line);border-radius:16px;overflow:auto;line-height:1.6}
+.doc-section pre code{padding:0;border:none;background:transparent}
+.doc-section ul,.doc-section ol{padding-left:24px}
+.img-placeholder{margin:14px 0;padding:10px 12px;border:1px dashed #35507f;border-radius:12px;color:var(--muted);background:rgba(255,255,255,.02);font-size:13px}
+.note{margin-top:14px;color:var(--muted);font-size:13px}
+.footer{margin-top:24px;color:var(--muted);font-size:13px}
+mark{background:#f6d365;color:#111;padding:0 3px;border-radius:4px}
+@media (max-width: 960px){.layout{grid-template-columns:1fr} .sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--line)} .main{padding:18px} .hero h1{font-size:28px} .doc-section{padding:20px} }
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="brand">林风社交论坛项目部署文档</div>
+  <div class="meta">离线整理版 · 左侧目录可快速跳转。<br>基于你上传的 9 个看云页面重新排版生成。</div>
+  <input id="search" class="search" placeholder="搜索章节标题..." />
+  <nav id="nav" class="nav"><div class="nav-group"><a class="nav-link" href="#section-">项目概括</a><a class="sublink level-h2" href="#sec-0-0">1.项目概况</a><a class="sublink level-h3" href="#sec-0-1">（1）项目简介</a><a class="sublink level-h3" href="#sec-0-2">（2）版本说明</a><a class="sublink level-h3" href="#sec-0-3">（3）演示地址</a><a class="sublink level-h3" href="#sec-0-4">（4）标准版和开源版区别</a><a class="sublink level-h3" href="#sec-0-5">（5）标准版更新日志</a></div><div class="nav-group"><a class="nav-link" href="#section-">部署环境要求</a><a class="sublink level-h2" href="#sec-1-0">2.部署环境要求</a><a class="sublink level-h4" href="#sec-1-1">开发环境安装参考</a></div><div class="nav-group"><a class="nav-link" href="#section-">开发工具</a><a class="sublink level-h2" href="#sec-2-0">3.开发工具</a></div><div class="nav-group"><a class="nav-link" href="#section-">基本配置</a><a class="sublink level-h2" href="#sec-3-0">4.基本配置</a><a class="sublink level-h3" href="#sec-3-1">一、后端linfeng-community-backend项目</a><a class="sublink level-h3" href="#sec-3-2">二、移动端linfeng-community-uniapp项目</a><a class="sublink level-h4" href="#sec-3-3">1.基本配置</a><a class="sublink level-h4" href="#sec-3-4">2.启动微信小程序</a><a class="sublink level-h4" href="#sec-3-5">3.启动H5端</a><a class="sublink level-h4" href="#sec-3-6">4.启动APP端</a><a class="sublink level-h4" href="#sec-3-7">5.关于流量主广告</a><a class="sublink level-h4" href="#sec-3-8">6.关于手机验证码登录</a><a class="sublink level-h4" href="#sec-3-9">7.微信公众号配置</a><a class="sublink level-h3" href="#sec-3-10">三、后台管理端linfeng-community-vue项目</a><a class="sublink level-h4" href="#sec-3-11">1.基本配置</a></div><div class="nav-group"><a class="nav-link" href="#section-">常见问题</a><a class="sublink level-h3" href="#sec-4-0">1.为什么微信小程序登录显示“openid解析失败”？</a><a class="sublink level-h3" href="#sec-4-1">2.运行项目后显示“Redis服务异常”？</a><a class="sublink level-h3" href="#sec-4-2">3.  数据库导入或运行时报错Failure obtaining db row lock: Table 'linfengcommunity.QRTZ_LOCKS' doesn't exist</a><a class="sublink level-h3" href="#sec-4-3">4.消息管理列表的消息如何清理？</a><a class="sublink level-h3" href="#sec-4-4">5.话题在哪里新建？</a><a class="sublink level-h3" href="#sec-4-5">6.Swagger文档地址访问地址</a><a class="sublink level-h3" href="#sec-4-6">7.微信小程序提交审核阶段需要注意什么？</a><a class="sublink level-h3" href="#sec-4-7">8.H5和APP端用户注册的默认头像在哪里修改？</a><a class="sublink level-h3" href="#sec-4-8">9.帖子可以后台管理员审核后再发布吗？</a><a class="sublink level-h3" href="#sec-4-9">10.如何修改首页的帖子格式为瀑布流格式？</a><a class="sublink level-h3" href="#sec-4-10">11.项目的基础参数配置在后台哪里修改？</a><a class="sublink level-h3" href="#sec-4-11">12.不想把时间格式化为"几天前"的这种中文形式，该怎么处理。</a></div><div class="nav-group"><a class="nav-link" href="#section-">线上部署</a><a class="sublink level-h2" href="#sec-5-0">线上部署：</a><a class="sublink level-h3" href="#sec-5-1">一、打包：</a><a class="sublink level-h4" href="#sec-5-2">1.后端打包</a><a class="sublink level-h4" href="#sec-5-3">2.uniapp H5打包</a><a class="sublink level-h4" href="#sec-5-4">3.uniapp 微信小程序打包</a><a class="sublink level-h4" href="#sec-5-5">4.uniapp  app打包</a><a class="sublink level-h4" href="#sec-5-6">5.后台管理系统打包</a><a class="sublink level-h3" href="#sec-5-7">二、部署</a><a class="sublink level-h4" href="#sec-5-8">1.准备子域名</a><a class="sublink level-h4" href="#sec-5-9">2.安装宝塔</a><a class="sublink level-h4" href="#sec-5-10">3.nginx配置</a><a class="sublink level-h3" href="#sec-5-11">三、微信小程序审核注意事项</a></div><div class="nav-group"><a class="nav-link" href="#section-">二开指导</a><a class="sublink level-h2" href="#sec-6-0">1.用户端后端创建新接口</a><a class="sublink level-h3" href="#sec-6-1">（1）接口登录拦截</a><a class="sublink level-h3" href="#sec-6-2">（2）获取用户信息</a><a class="sublink level-h3" href="#sec-6-3">（3）响应体</a><a class="sublink level-h2" href="#sec-6-4">2.创建新的定时任务</a><a class="sublink level-h2" href="#sec-6-5">3.前端开发参考文档</a><a class="sublink level-h2" href="#sec-6-6">4.后台管理端</a><a class="sublink level-h4" href="#sec-6-7">1.如何获取当前登录管理员</a><a class="sublink level-h4" href="#sec-6-8">2.如何记录后台管理端的敏感操作日志</a><a class="sublink level-h4" href="#sec-6-9">3.如何创建后台管理系统后端接口</a><a class="sublink level-h4" href="#sec-6-10">4.如何创建后台管理系统的页面</a><a class="sublink level-h2" href="#sec-6-11">5. Swagger的文档使用</a></div><div class="nav-group"><a class="nav-link" href="#section-im">IM部署使用</a><a class="sublink level-h2" href="#sec-7-0">1.前言</a><a class="sublink level-h3" href="#sec-7-1">（1）表情包的静态资源</a><a class="sublink level-h3" href="#sec-7-2">（2）nginx的部署</a><a class="sublink level-h3" href="#sec-7-3">（3）IM文件存储</a><a class="sublink level-h3" href="#sec-7-4">（4）websocket集群部署</a></div><div class="nav-group"><a class="nav-link" href="#section-">使用手册</a><a class="sublink level-h2" href="#sec-8-0">一、演示效果</a><a class="sublink level-h2" href="#sec-8-1">二、使用说明</a><a class="sublink level-h3" href="#sec-8-2">基本配置</a><a class="sublink level-h4" href="#sec-8-3">（1）文件存储配置</a><a class="sublink level-h4" href="#sec-8-4">（2）我的账户开关</a><a class="sublink level-h4" href="#sec-8-5">（3）积分和余额的互相兑换</a><a class="sublink level-h4" href="#sec-8-6">（4）我的客服 页面配置</a><a class="sublink level-h4" href="#sec-8-7">（5）邮箱登录</a><a class="sublink level-h4" href="#sec-8-8">（6）注册协议</a><a class="sublink level-h4" href="#sec-8-9">（7）会员入口开关</a><a class="sublink level-h4" href="#sec-8-10">（8）会员基本设置</a><a class="sublink level-h4" href="#sec-8-11">（9）首页样式设置</a></div></nav>
+  <div class="note">说明：原页面中的大量截图资源未随 HTML 一起保存，因此这里保留了全部文字正文，并将原截图位置标记为“文档截图已省略”。</div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <h1>完整离线文档站</h1>
+    <p>包含：项目概括、部署环境要求、开发工具、基本配置、常见问题、线上部署、二开指导、IM 部署使用、使用手册。</p>
+  </div>
+  <section class="doc-section" id="section-"><h1>项目概括</h1><h2 id="sec-0-0"><a id="1_0" rel="noopener noreferrer" target="_blank"></a>1.项目概况</h2>
+<h3 id="sec-0-1"><a id="1_2" rel="noopener noreferrer" target="_blank"></a>（1）项目简介</h3>
+<p>林风社交论坛uniapp小程序/H5/APP版本是基于SpringBoot+MybatisPlus+Shiro+jwt+Redis+Vue+Uniapp的前后端分离的社交论坛问答发帖/BBS项目 。项目分为Uniapp用户端（兼容H5、微信小程序、APP）和Vue后台管理端（包括完整的RBAC权限处理）， 基于以下技术栈开发：SpringBoot、MybatisPlus、Shiro、jwt、Redis、Vue、Uniapp、MySQL、Websocket。<br/>
+项目分为开源版和标准版，<strong>本文档为标准商业版文档</strong>。</p>
+<p><strong>开源版文档在QQ交流群</strong></p>
+<p>QQ交流群1（640700429）【2000人已满】<br/>
+QQ交流群2（667859660）【可进】<br/>
+林风社交论坛开源版项目地址：<a href="https://gitee.com/virus010101/linfeng-community" rel="noopener noreferrer" target="_blank">https://gitee.com/virus010101/linfeng-community</a></p>
+<p><strong>林风社交论坛项目官网</strong>：<a href="https://www.linfengtech.cn/" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn</a><br/>
+备用官网：<a href="https://net.linfeng.tech/" rel="noopener noreferrer" target="_blank">https://net.linfeng.tech</a></p>
+<p>更多演示可关注“林风科技”公众号：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+或者微信小程序搜索：林风bbs</p>
+<hr/>
+<p>本软件软著登记号（2025SR0586781、 2025SR0731472）</p>
+<hr/>
+<h3 id="sec-0-2"><a id="2_21" rel="noopener noreferrer" target="_blank"></a>（2）版本说明</h3>
+<p>各版本功能清单和差异请查看：<a href="https://www.linfengtech.cn/version/version.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/version.html</a><br/>
+标准版咨询请查看：<a href="https://www.linfengtech.cn/commercial.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/commercial.html</a></p>
+<hr/>
+<h3 id="sec-0-3"><a id="3_25" rel="noopener noreferrer" target="_blank"></a>（3）演示地址</h3>
+<p>1.用户端演示<br/><div class="img-placeholder">文档截图已省略</div><br/>
+微信小程序标准版官方演示站点，微信搜索"林风bbs"</p>
+<p>2.后台管理端:<br/>
+linfeng-community林风社交论坛标准版后台管理端：<br/><a href="https://dev.linfeng.tech/" rel="noopener noreferrer" target="_blank">https://dev.linfeng.tech</a><br/>
+演示账号自带</p>
+<hr/>
+<h3 id="sec-0-4"><a id="4_36" rel="noopener noreferrer" target="_blank"></a>（4）标准版和开源版区别</h3>
+<p>林风社交论坛详细功能清单请查看：<a href="https://www.linfengtech.cn/version/version.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/version.html</a></p>
+<p><strong>林风社交论坛项目官网</strong>：<a href="https://www.linfengtech.cn/" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn</a><br/>
+备用官网：<a href="https://net.linfeng.tech/" rel="noopener noreferrer" target="_blank">https://net.linfeng.tech</a></p>
+<hr/>
+<h3 id="sec-0-5"><a id="5_44" rel="noopener noreferrer" target="_blank"></a>（5）标准版更新日志</h3>
+<p>林风社交论坛历史更新记录汇总：<a href="https://www.linfengtech.cn/authInfo/version.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/authInfo/version.html</a></p>
+<p><em><strong>当前标准版V3.1.0</strong></em><br/>
+2026.02.28<br/><strong>V3.1.0发布</strong><br/>
+【新增】1.新增App端热更新功能<br/>
+【新增】2.新增后台私信管理<br/>
+【新增】3.新增用户主页的注销提示<br/>
+【优化】4.优化websocket集群部署配置<br/>
+【优化】5.优化消息队列在集群下避免重复消费问题<br/>
+【优化】6.优化"我的"页面UI<br/>
+【优化】7.优化私信页上下线显示实时性<br/>
+【优化】8.小程序端切换登录方式兼容<br/>
+【优化】9.私信页多端样式兼容优化<br/>
+【修复】10.修复框架升级导致的视频接口bug<br/>
+【修复】11.修复框架升级导致的私信长按撤回bug<br/>
+【修复】12.修复框架升级导致的签到页积分数实时更新bug</p>
+<p>2025.12.08<br/><strong>V3.0.0发布</strong><br/>
+【新增】1.后端框架升级至JDK17+SpringBoot3.5<br/>
+【新增】2.相关maven依赖全面升级<br/>
+【新增】3.升级swagger文档版本并规范接口写法<br/>
+【新增】4.全面改造升级后端dto、vo等目录<br/>
+【新增】5.重构升级消息页UI<br/>
+【新增】6.调整广场页顶部和热门话题的样式<br/>
+【新增】7.新增注销功能及页面<br/>
+【新增】8.新增设置页面支持清理缓存等<br/>
+【新增】9.新增关于平台页面支持版本查看升级<br/>
+【新增】10.重构升级首页的经典帖子列表页<br/>
+【优化】11.帖子瀑布流取消图片高度自适应<br/>
+【优化】12.XSS模块优化升级<br/>
+【优化】13.海报生成功能优化升级<br/>
+【优化】14.用户端分页接口调整优化<br/>
+【优化】15.好友模块接口及前端调整<br/>
+【优化】16.消息模块后端调整优化<br/>
+【优化】17.长文中的图片纳入第三方内容审核<br/>
+【优化】18.圈子发布页样式优化、<br/>
+【优化】19.H5端首页添加备案信息<br/>
+【优化】20.帖子专区调整帖子样式</p>
+<p>2025.10.20<br/><strong>V1.25.0发布</strong><br/>
+【新增】1.框架升级：从uniapp vue2全面升级为uniapp vue3<br/>
+【新增】2.代码范式升级：从Options API全面升级为Composition API<br/>
+【新增】3.首页瀑布流组件支持纯文字贴<br/>
+【新增】4.首页瀑布流组件优化图片左右分布计算<br/>
+【新增】5.微信小程序端支持直接openid登录<br/>
+【新增】6.管理端支持设置小程序端的登录方式<br/>
+【新增】7.管理端支持设置小程序端是否开启昵称头像弹框<br/>
+【新增】8.微信小程序端支持更多页面在非登录状态下访问</p>
+<p>2025.09.01<br/><strong>V1.24.0发布</strong><br/>
+【新增】1.发帖优先上传图片减少等待时间<br/>
+【新增】2.重构升级消息列表页UI<br/>
+【新增】3.重构系统设置页UI<br/>
+【新增】4.重构优化文件上传、发帖等后端代码<br/>
+【优化】5.处理后台角色权限编辑树形控件回显<br/>
+【优化】6.优化文件类型上传的限制<br/>
+【优化】7.优化后台图片上传报错提示<br/>
+【优化】8.优化uniapp端公共样式封装<br/>
+【优化】9.处理微信小程序IOS端视频暂停声音问题<br/>
+【优化】10.app端发帖增加相机权限<br/>
+【优化】11.优化部分页面小程序端登录跳转<br/>
+2025.07.11<br/><strong>V1.23.0发布</strong><br/>
+【新增】1.全新升级websocket模块</p>
+<p>【新增】2.支持集群部署</p>
+<p>【新增】3.新增数据库脚本备份定时任务</p>
+<p>【新增】4.会员页、经验等级页UI焕新升级</p>
+<p>【新增】5.充值页、提现页UI焕新升级</p>
+<p>【新增】6.长文专区UI焕新升级</p>
+<p>【新增】7.举报模块三个页面UI升级</p>
+<p>【优化】8.更新后端所有warning提示的代码</p>
+<p>【优化】9.H5端在浏览器打开的路径重定向优化</p>
+<p>【优化】10.优化支付精度问题</p>
+<p>【优化】11.修改时间格式化规则：超过1个月直接显示年月日</p>
+<p>【优化】12.优化话题列表更新样式导致的问题<br/>
+2025.05.28<br/><strong>V1.22.0发布</strong><br/>
+【新增】1.新增我创建的、我加入的圈子<br/>
+【新增】2.圈子列表、圈子分类页UI全新升级<br/>
+【新增】3.话题列表、新增话题页UI全新升级<br/>
+【新增】4.排行榜页、联系客服页UI全新升级<br/>
+【新增】5.新的朋友消息通知页UI全新升级<br/>
+【新增】6.投票贴支持后台管理端查看实时结果<br/>
+【新增】7.新增背景图后台维护<br/>
+【新增】8.H5端评论链接跳转<br/>
+【新增】9.海报生成支持http格式<br/>
+【新增】10.菜单管理支持序号排序<br/>
+【优化】11.海报生成同步配置的存储类型<br/>
+【优化】12.部分maven依赖升级</p>
+<p>2025.04.07<br/><strong>V1.21.0发布</strong><br/>
+【新增】1.新增APP版本管理功能<br/>
+【新增】2.新增minio文件存储<br/>
+【新增】3.新增社区规范协议<br/>
+【新增】4.重构升级圈子发布页样式<br/>
+【新增】5.重构升级圈子编辑页样式<br/>
+【新增】6.视频封面统一管理<br/>
+【新增】7.后端全面适配用户PC网页端<br/>
+【优化】8.后台管理系统侧边栏升级<br/>
+【优化】9.后台管理系统首页数据统计等优化<br/>
+【优化】10.隐私和服务协议改为富文本编辑<br/>
+【优化】11.优化消息已读状态<br/>
+【优化】12.投票后支持查看自己投票的选项</p>
+<p>2025.02.21<br/><strong>V1.20.0发布</strong><br/>
+【新增】1.首页新增帖子列表样式自定义功能<br/>
+【新增】2.首页新增「最新评论帖子」板块<br/>
+【新增】3.首页新增帖子类型筛选器<br/>
+【新增】4.websocket升级为长连接机制<br/>
+【新增】5.websocket心跳检测全新升级<br/>
+【新增】6.个人主页新增自定义背景图功能<br/>
+【新增】7.帖子瀑布流组件全新升级<br/>
+【新增】8.会员过期检查加入定时任务<br/>
+【优化】9.帖子表和圈子表索引优化<br/>
+【优化】10.优化访客 IP 查询</p>
+<p>2025.01.02<br/><strong>V1.19.0发布</strong><br/>
+【新增】1.阿里云存储升级为V4签名算法<br/>
+【新增】2.本地存储配置迁移至后台管理端<br/>
+【新增】3.后台访客模块新增IP查询和快捷操作<br/>
+【新增】4.后台话题管理支持新增话题和查询<br/>
+【新增】5.后台帖子管理支持查看长文内容详情<br/>
+【优化】6.后台帖子、圈子、账单模块升级<br/>
+【优化】7.优化评论缓存策略<br/>
+【优化】8.优化发帖排行榜查询规则<br/>
+【优化】9.优化圈子作品数量缓存<br/>
+【优化】10.优化管理端富文本编辑器图片上传<br/>
+2024.11.1<br/><strong>V1.18.0发布</strong><br/>
+【新增】1.新增帖子草稿箱功能<br/>
+【新增】2.新增单点登录，方便整合其他应用<br/>
+【新增】3.新增圈子管理员进圈审核提醒<br/>
+【新增】4.新增余额兑换积分功能<br/>
+【新增】5.新增抽奖模块自定义奖品类型<br/>
+【新增】6.封号和禁言用户主页新增警示栏<br/>
+【优化】7.全新升级系统消息页面样式<br/>
+【优化】8.全新升级举报模块页面样式<br/>
+【优化】9.全新升级系统隐私设置页面样式<br/>
+【优化】10.付费贴提示项优化为更友好方式<br/>
+【优化】11.优化退出登录后好友模块消息重置<br/>
+【优化】12.优化后台抽奖图片上传</p>
+<p>2024.9.9<br/><strong>V1.17.0发布</strong></p>
+<p>【新增】1.新增本地文件存储<br/>
+【新增】2.新增发贴/涨粉排行榜<br/>
+【新增】3.新增小程序部分页面开关约束<br/>
+【新增】4.新增备案跳转<br/>
+【优化】5.优化上传文件限制<br/>
+【优化】6.简化长文编辑器<br/>
+【优化】7.优化访客ip查询增加备用查询接口<br/>
+【优化】8.优化瀑布流长度限制<br/>
+2024.7.22<br/><strong>V1.16.0发布</strong><br/>
+【新增】1.新增百度智能云内容审核<br/>
+【新增】2.新增图片评论功能<br/>
+【新增】3.新增redis消息队列异步解耦<br/>
+【新增】4.新增邮箱绑定校验<br/>
+【新增】5.默认注册头像支持在后台配置<br/>
+【新增】6.圈内帖子数，热门搜索，话题添加缓存<br/>
+【新增】7.新增公众号在微信自动登录的配置项<br/>
+【新增】8.新增支持查看本人非上架帖子<br/>
+【优化】9.优化帖子瀑布流列表样式<br/>
+【优化】10.优化修改热门贴查询规则<br/>
+【优化】11.优化提现相关账单记录<br/>
+【优化】12.优化帖子和圈子管理后台条件查询<br/>
+【优化】13.视频贴支持跳转后播放<br/>
+【优化】14.优化投票贴私密圈和消息清理<br/>
+【优化】15.优化封装后端代码<br/>
+2024.6.3<br/><strong>V1.15.0发布</strong><br/>
+【新增】1.新增访客统计面板支持IP和活跃用户统计<br/>
+【新增】2.H5端在PC端显示样式兼容<br/>
+【新增】3.帖子详情页轮播图支持自适应高度<br/>
+【新增】4.好友模块设置全局开关<br/>
+【新增】5.细分用户禁言和用户封号功能<br/>
+【新增】6.后台消息管理升级,支持消息单独发送<br/>
+【新增】7.管理端登录日志增加ip城市查询<br/>
+【新增】8.导航栏和用户菜单批量上下架<br/>
+【优化】9.帖子列表瀑布流样式全新升级<br/>
+【优化】10.账户充值、签到等页面样式升级<br/>
+【优化】11.后台评论管理模块全新升级<br/>
+【优化】12.优化积分奖励限制规则<br/>
+【优化】13.优化阿里云海报生成下载<br/>
+【优化】14.付费贴简介展示在帖子列表页<br/>
+【优化】15.调整tabbar图标和高度，UI升级<br/>
+2024.4.9<br/><strong>V1.14.0发布</strong><br/>
+【新增】1.微信公众号支持注册后用户无感登录</p>
+<p>【新增】2.新增子评论折叠栏，优化子评论查询</p>
+<p>【新增】3.首页公告弹框样式重构升级</p>
+<p>【新增】4.掉线重连操作改成普通接口确保稳定性</p>
+<p>【新增】5.帖子详情内容支持换行解析</p>
+<p>【优化】6.账单记录展示备注信息及页面样式优化</p>
+<p>【优化】7.优化付费贴跳转充值页面后的交互流程</p>
+<p>【优化】8.付费贴详情增加简介栏及小程序端转发优化</p>
+<p>【优化】9.优化App端切屏的websocket重连机制</p>
+<p>【优化】10.优化小程序端注册连线及首页登录跳转</p>
+<p>【优化】11.优化后台前端表单样式等<br/>
+2024.2.27<br/><strong>V1.13.0发布</strong><br/>
+【新增】1.新增微信公众号版本<br/>
+【新增】2.支持微信公众号静默授权<br/>
+【新增】3.支持微信公众号支付<br/>
+【新增】4.新增腾讯短信验证码<br/>
+【新增】5.IOS小程序端支持关闭虚拟支付开关<br/>
+【优化】6.优化付费贴转发的简介展示问题<br/>
+【优化】7.支持后台删贴自主提醒用户<br/>
+【优化】8.优化搜索，优化后台分页<br/>
+【优化】9.优化签到查询等<br/>
+2023.12.12<br/><strong>V1.12.0发布</strong><br/>
+【新增】1.新增私密圈子<br/>
+【新增】2.付费贴增加简介部分<br/>
+【新增】3.付费贴增加条件开关<br/>
+【新增】4.新增会员权益动态设置模块<br/>
+【新增】5.新增邮箱注册接口优化邮箱登录<br/>
+【新增】6.新增圈子创建审核开关<br/>
+【新增】7.新增私密圈子条件开关<br/>
+【新增】8.支持开启全局评论审核<br/>
+【新增】9.新增后台人机创建按钮及头像昵称修改<br/>
+【优化】10.优化投票贴选项重复内容校验<br/>
+【优化】11.优化后台评论搜索审核及抽奖模块<br/>
+【优化】12.优化代码枚举、前端样式等</p>
+<p>2023.10.22<br/><strong>V1.11.0发布</strong><br/>
+【新增】1.新增短视频滑动浏览模块<br/>
+【新增】2.新增短视频播放源加密保护<br/>
+【新增】3.新增后台发视频及视频链接上传<br/>
+【新增】4.集成富文本编辑新增后台发布长文<br/>
+【优化】5.点赞评论、粉丝关注等模块深度集成Redis实现高效缓存，提升接口性能<br/>
+【优化】6.优化搜索模块限制搜索频率<br/>
+【优化】7.后台前端vue3重构相关模块优化<br/>
+【优化】8.其他细节优化<br/>
+2023.9.12<br/><strong>V1.10.0发布</strong><br/>
+【新增】1.后台前端重构升级为Vue3+Element-Plus</p>
+<p>【新增】2.新增适配微信小程序用户隐私协议</p>
+<p>【新增】3.新增多种全局自定义加载样式</p>
+<p>【新增】4.新增用户端404模块页面跳转</p>
+<p>【优化】5.优化websocket心跳机制保持通信长连接</p>
+<p>【优化】6.重构升级广场页导航模块支持不限数量</p>
+<p>【优化】7.优化登录刷新、优化会员续费<br/><strong>V1.9.1发布</strong><br/>
+2023.8.9<br/>
+【新增】1.新增用户经验等级模块和用户LV标识</p>
+<p>【新增】2.新增积分打赏模块</p>
+<p>【新增】3.新增帖子列表暗黑系列皮肤</p>
+<p>【新增】4.新增小程序端支持获取微信头像昵称</p>
+<p>【新增】5.会员开通支持余额支付</p>
+<p>【新增】6.支持后台增减用户积分</p>
+<p>【新增】7.支持后台指定用户会员状态和有效期限</p>
+<p>【新增】8.支持后台创建圈子</p>
+<p>【优化】9.支持后台圈子分类、问答限制等修改</p>
+<p>【优化】10.增加发帖积分奖励每日限制次数防止盗刷</p>
+<p>【优化】11.帖子内容增加链接标识及跳转</p>
+<p>【优化】12.优化分享海报可能变形的问题</p>
+<p><strong>V1.9.0发布</strong><br/>
+2023.6.27<br/>
+【新增】1.新增限制进圈问答审核模块</p>
+<p>【新增】2.新增圈子黑名单方便圈子管理</p>
+<p>【新增】3.新增好友列表删除功能</p>
+<p>【新增】4.新增首页公告弹框</p>
+<p>【新增】5.新增后台发帖</p>
+<p>【新增】6.新增动态返回顶部按钮</p>
+<p>【新增】7.新增后台帖子模块上下架管理</p>
+<p>【优化】8.热搜话题、热搜帖子界面升级</p>
+<p>【优化】9.搜索模块界面优化升级</p>
+<p>【优化】10.话题页帖子分类等优化升级</p>
+<p>【优化】11.后台首页统计面板优化升级</p>
+<p>【优化】12.付费贴样式优化升级</p>
+<p>【优化】13.长文详情页增加圈子信息</p>
+<p>【优化】14.圈子名称重复问题优化</p>
+<p><strong>V1.8.2发布</strong><br/>
+2023.5.4</p>
+<p>【新增】1.新增首页可配置化布局</p>
+<p>【新增】2.新增帖子详情页可配置化样式<br/>
+【新增】3.新增搜索记录、热门搜索<br/>
+【新增】4.新增圈主转让、成员搜索、成员移除<br/>
+【新增】5.新增圈子详情页多分类列表<br/>
+【新增】6.新增流量主广告可配置化<br/>
+【新增】7.新增会员模块入口开关<br/>
+【优化】8.重构优化首页、瀑布流列表样式<br/>
+【优化】9.优化用户主页、圈子设置页样式<br/>
+【优化】10.优化websocket切换应用重连<br/><strong>V1.8.1发布</strong><br/>
+2023.3.13<br/>
+【新增】1.新增长文模块，支持富文本编辑</p>
+<p>【新增】2.新增用户账号处罚管理</p>
+<p>【新增】3.新增用户名个性签名敏感词检测</p>
+<p>【新增】4.新增首页广场页顶部背景色</p>
+<p>【新增】5.新增管理端话题删贴和修改权限</p>
+<p>【新增】6.新增websocket掉线重连重发</p>
+<p>【新增】7.新增uniapp分包方便小程序端二开</p>
+<p>【优化】8.优化升级话题详情页，圈子页，圈子简介页，付费确认页页面</p>
+<p>【优化】9.优化个人页mini轮播外链跳转</p>
+<p>【优化】10.优化视频贴发布参数校验及h5端控制台提示处理</p>
+<p>【优化】11.优化用户主页帖子点赞传参<br/><strong>V1.8.0发布</strong><br/>
+2023.2.6<br/>
+【新增】1.新增用户提现模块<br/>
+【新增】2.新增导航区<br/>
+【新增】3.新增小程序端顶部收藏提示栏<br/>
+【新增】4.新增私信消息重发机制<br/>
+【新增】5.新增后台账单、会员等模块条件查询<br/>
+【优化】6.后台统计面板统计优化<br/>
+【优化】7.token过期强制登录问题优化<br/>
+【优化】8.积分兑换余额模块前端重构优化<br/>
+【优化】9.视频详情页优化<br/>
+【优化】10.ios在h5端长按复制问题处理<br/><strong>V1.7.0发布</strong><br/>
+2022.12.5<br/>
+【新增】1.新增好友模块<br/>
+【新增】2.新增IM即时通讯(自研，非第三方)<br/>
+【新增】3.私聊支持表情包，文件，视频，图片<br/>
+【新增】4.新增用户侧边导航栏<br/>
+【新增】5.用户隐私设置<br/>
+【优化】6.发帖页UI优化<br/>
+【优化】7.消息模块重构升级</p>
+<p><strong>V1.6.0发布</strong><br/>
+2022.11.7<br/>
+【新增】1.新增广场页<br/>
+【新增】2.新增热榜用户，热榜帖子，热榜圈子，热榜话题<br/>
+【新增】3.新增h5和小程序端帖子和圈子详情页海报分享<br/>
+【新增】4.新增微信小程序登录绑定手机号 打通三端账号<br/>
+【新增】5.新增帖子多图智能布局<br/>
+【新增】6.新增接口缓存优化性能<br/>
+【新增】7.新增限流注解用于验证码发送等防止盗刷接口<br/>
+【新增】8.新增个人页mini幻灯片<br/>
+【新增】9.新增腾讯地图精确ip定位接口<br/>
+【新增】10.新增会员续费功能<br/>
+【新增】11.新增帖子详情页定位和话题跳转<br/>
+【优化】12.微信小程序登录接口规则变更的调整<br/>
+【优化】13.圈子详情页前端优化调整 增加用户列表展示<br/>
+【优化】14.帖子详情页、会员页面样式调整<br/>
+【优化】15.后台管理系统细节优化如文本超出弹窗等</p>
+<p><strong>V1.5.0发布</strong><br/>
+2022.10.8<br/>
+【新增】1.新增会员模块</p>
+<p>【新增】2.接入广告模块</p>
+<p>【新增】3.新增用户改名限制</p>
+<p>【新增】4.新增发帖奖励</p>
+<p>【新增】5.新增数字格式化 过滤器</p>
+<p>【新增】6.会员积分奖励翻倍</p>
+<p>【新增】7.新增系统消息长按删除</p>
+<p>【新增】8.增加管理端消息模块 帐单模块条件查询</p>
+<p>【新增】9.创建圈子数量限制</p>
+<p>【优化】10.处理app端视频播放</p>
+<p>【优化】11.删除帖子的数据清理优化</p>
+<p>【优化】12.禁用账号禁止私聊</p>
+<p>【优化】13.用户端圈子信息修改可能越权的问题</p>
+<p>【优化】14.帖子详情查询优化</p>
+<p>【优化】15.敏感词库管理优化调整</p>
+<p><strong>V1.4.2发布</strong><br/>
+2022.9.6<br/>
+【新增】1.新增举报模块 <em>[重磅]</em><br/>
+【新增】2.重构升级用户主页和个人页UI <em>[重磅]</em><br/>
+【新增】3.APP端适配 <em>[重磅]</em><br/>
+【优化】4.帖子列表操作栏动态处理<br/>
+【优化】5.帖子列表查询优化及移动端结构调整<br/>
+【优化】6.增加个人页背景图公共配置项<br/><strong>V1.4.1发布</strong><br/>
+2022.8.16<br/>
+【新增】1.新增积分抽奖大转盘 <em>[重磅]</em><br/>
+【新增】2.新增圈子内帖子置顶功能 与平台置顶区分 <em>[重磅]</em><br/>
+【新增】3.新增客服页面 <em>[重磅]</em><br/>
+【新增】4.新增邮箱验证码登录 可配置开关 <em>[重磅]</em><br/>
+【新增】5.H5端新增注册页面 区分登录和注册 * [重磅]*<br/>
+【优化】6.圈子管理员h5端删帖优化<br/>
+【优化】7.h5端设置管理员页面样式兼容和用户列表图标<br/>
+【优化】8.帖子详情查询优化<br/>
+【优化】9.投票贴空选项优化<br/>
+【优化】10.fastjson升级<br/>
+【优化】11.后端swagger文档全注释<br/>
+【优化】12.用户缓存信息<br/>
+【优化】13.手机验证码登录</p>
+<p><strong>V1.4.0发布</strong><br/>
+2022.7.24</p>
+<p>【新增】1.虚拟用户自动注册发帖                  <em>【重磅】</em><br/>
+【新增】2.后台统一管理可配置项设置		<em>【重磅】</em><br/>
+【新增】3.后台管理系统首页增加echarts图和快捷入口	<em>【重磅】</em><br/>
+【新增】4.个人中心菜单在管理端可配置化		<em>【重磅】</em><br/>
+【新增】5.轮播图新增跳转链接包括外链和页面链接<br/>
+【新增】6.新增帖子上下架系统消息通知的处理<br/>
+【新增】7.新增圈子页公告栏通知<br/>
+【优化】8.后台管理系统添加敏感操作日志记录<br/>
+【优化】9.h5端登录页面重构升级	<em>【重磅】</em><br/>
+【修复】10.修复帖子列表由于置顶帖导致分页查询不全的问题<br/>
+【修复】11.修复圈子解散和删除存在的bug</p>
+<p>2022.7.1<br/><strong>V1.3.2发布</strong></p>
+<p>1.新增投票贴</p>
+<p>2.私聊模块前端样式重构升级<br/>
+3.系统通知消息统一管理<br/>
+4.修复苹果机型无法格式化时间的问题<br/>
+5.修复瀑布流模式下h5可能存在的不兼容</p>
+<p>2022.6.8<br/><strong>V1.3.1发布</strong></p>
+<p>1.修复移动端分页功能存在的底部提示bug</p>
+<p>2.修复圈子管理员修改圈子背景图无效的bug</p>
+<p>3.修复圈子人数展示不统一的问题</p>
+<p>4.修复一键已读为空时的异常报错</p>
+<p>5.优化圈子查询代码</p>
+<p>6.优化帖子分页查询组装代码</p>
+<p>7.新增子评论回复时间展示</p>
+<p>8.新增帖子列表组件置顶图标展示属性</p>
+<p>9.新增发帖时选择话题</p>
+<p>10.发帖时间改为新格式</p>
+<p>11.新增帖子瀑布流展示风格组件</p>
+<p>2022.5.14</p>
+<p><strong>V1.3.0发布</strong></p>
+<p>1.优化私聊功能及时性</p>
+<p>2.优化阿里云短信验证码和测试阶段的处理</p>
+<p>3.优化话题标签删除导致的问题</p>
+<p>4.新增用户端圈子管理员圈内删贴功能</p>
+<p>5.新增微信小程序端支付</p>
+<p>6.新增私信列表历史消息</p>
+<p>7.新增付费贴</p>
+<p>8.新增积分签到</p>
+<p>9.新增余额钱包体系&amp;用户积分体系</p>
+<p>10.新增可配置消息清理定时任务</p>
+<p>11.新增用户端父子评论长按删除</p>
+<p>12.新增管理端模糊查询</p>
+<p>13.新增后台管理端用户余额充值</p>
+<p>14.修复私信排序问题和查询可能存在的问题</p>
+<p>15.修复quartz定时任务暂停和恢复的bug</p>
+<p>16.新增h5微信支付</p>
+<p>17.新增视频模块和充值模块显示配置</p>
+<p>18.新增积分兑换余额模块</p>
+<p>2022.4.24</p>
+<p><strong>V1.2.2发布</strong></p>
+<p>1.修复H5端回复评论bug；</p>
+<p>2.修复H5端分享图标布局；</p>
+<p>3.修复H5登录同步圈子人数；</p>
+<p>4.优化H5端圈子页布局；</p>
+<p>5.优化无效token处理；</p>
+<p>6.新增H5端删除个人帖子选项；</p>
+<p>2022.04.17</p>
+<p><strong>V1.2.1发布</strong></p>
+<p>1.新增防止重复提交注解</p>
+<p>2.扩大匿名访问权限</p>
+<p>3.优化小程序登录</p>
+<p>4.新增后台前端面板统计数据</p>
+<p>5.移动端用户手机号脱敏处理</p>
+<p>6.新增帖子上下架处理</p>
+<p>2022.04.04</p>
+<p><strong>V1.2发布</strong></p>
+<p>1.优化私聊模块</p>
+<p>2.新增置顶功能</p>
+<p>3.优化UI</p>
+<p>4.优化消息已读未读的处理</p>
+<p>5.其他bug修复</p>
+<p>2022.03.05</p>
+<p><strong>V1.1发布</strong></p>
+<p>移动端适配H5</p>
+<p>移动端分享功能优化</p>
+<p>移动端其他bug修复</p>
+<p>2022.01.29</p>
+<p><strong>V1.0发布</strong></p></section><section class="doc-section" id="section-"><h1>部署环境要求</h1><h2 id="sec-1-0"><a id="2_0" rel="noopener noreferrer" target="_blank"></a>2.部署环境要求</h2>
+<p>林风社交论坛项目开发环境要求如下：</p>
+<p>林风社交论坛<strong>V3.0.0以及之后的新版本</strong>，要求的后端环境配置如下：</p>
+<pre><code> JDK17（就用17）
+ 不得低于Maven3.6.3（参考版本3.8.9）
+</code></pre>
+<p>林风社交论坛<strong>V1.25.0以及之前的老版本</strong>，要求的后端环境配置如下：</p>
+<pre><code> JDK8（就用8）
+ Maven3.5或左右的版本（参考版本3.5.2）
+</code></pre>
+<hr/>
+<p><strong>Redis5</strong>及以上(看清楚哈，是5或者5以上的版本，低于5的版本不行)<br/><strong>MySQL5.7</strong> (MySQL5.6也可以的。MySQL8.0版本也可以，不过需要配置一下MySQL配置项。具体配置方法请查看<code>常见问题</code>章节的第26条。比8.0还高的MySQL版本就不推荐了，应该不支持的)</p>
+<p><strong>Vue运行环境</strong>（npm, node.js）</p>
+<blockquote class="default"><p><strong>标准商业版</strong>后台前端已经升级为Vue3+Element-Plus<br/>
+node.js版本大于16才行，参考版本（node.js v18.15.0   npm v9.5.0）最好就用参考版本，保证不出问题。</p></blockquote>
+<hr/>
+<p>如果你的node版本不符合对应版本的要求，那就推荐你安装很好用的node版本管理工具<code>nvm</code>，可以随意切换管理不同node版本：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+nvm 安装使用的参考博客：<br/><a href="https://blog.csdn.net/m0_46491549/article/details/129750694" rel="noopener noreferrer" target="_blank">https://blog.csdn.net/m0_46491549/article/details/129750694</a></p>
+<hr/>
+<h4 id="sec-1-1"><a id="_32" rel="noopener noreferrer" target="_blank"></a>开发环境安装参考</h4>
+<p>以下是电脑本地运行项目需要的安装的软件教程链接，供不熟悉开发的用户参考。<br/>
+（推荐的这些教程不一定是最适合你的，类似的教程可以多看几篇）<br/>
+JDK8安装教程：<a href="https://zhuanlan.zhihu.com/p/478547657?utm_id=0" rel="noopener noreferrer" target="_blank">https://zhuanlan.zhihu.com/p/478547657?utm_id=0</a><br/>
+JDK17安装教程：<a href="https://cloud.tencent.com/developer/article/2318159" rel="noopener noreferrer" target="_blank">https://cloud.tencent.com/developer/article/2318159</a><br/>
+Maven安装教程：<a href="https://blog.csdn.net/m0_52735414/article/details/129111082" rel="noopener noreferrer" target="_blank">https://blog.csdn.net/m0_52735414/article/details/129111082</a><br/>
+IDEA lombook插件安装教程（项目中已添加maven依赖，只需安装插件即可）：<a href="https://www.cnblogs.com/gdjlc/p/12008498.html" rel="noopener noreferrer" target="_blank">https://www.cnblogs.com/gdjlc/p/12008498.html</a><br/>
+IDEA与JDK、Maven安装配置全解析：<a href="https://blog.csdn.net/m0_46423830/article/details/141112626" rel="noopener noreferrer" target="_blank">https://blog.csdn.net/m0_46423830/article/details/141112626</a><br/>
+MySQL安装教程：<a href="https://www.cnblogs.com/slade-sun/p/8992874.html" rel="noopener noreferrer" target="_blank">https://www.cnblogs.com/slade-sun/p/8992874.html</a><br/>
+Redis安装教程（安装redis5及以上版本）：<a href="https://www.cnblogs.com/liujunwei/p/11757880.html" rel="noopener noreferrer" target="_blank">https://www.cnblogs.com/liujunwei/p/11757880.html</a><br/>
+nvm安装教程：<a href="https://blog.csdn.net/m0_46491549/article/details/129750694" rel="noopener noreferrer" target="_blank">https://blog.csdn.net/m0_46491549/article/details/129750694</a><br/><strong>注意：这些安装针对的是自己电脑本地运行调式打包需要的环境。如果你是要在服务器上运行的话，具体看后面的“线上部署”章节的描述，服务器上部署推荐采用宝塔。</strong></p></section><section class="doc-section" id="section-"><h1>开发工具</h1><h2 id="sec-2-0"><a id="3_0" rel="noopener noreferrer" target="_blank"></a>3.开发工具</h2>
+<p>林风社交论坛项目本地环境和开发工具</p>
+<blockquote class="default"><p>Java运行环境 JDK17（V1.25.0以及之前的版本为JDK8）<br/>
+IntelliJ IDEA<br/>
+确保你本地的 Maven 环境和IDEA 的 lombok 插件已经安装。如果导入后 get set 报错，请确认lombok 插件是否正确安装。如果导入项目后pom.xml后爆红，请确保Maven 环境是否设置正常。</p></blockquote>
+<p>WEB PC 管理端环境和开发工具</p>
+<blockquote class="default"><p>WebStrome/Vscode或其他的编辑器都可以，推荐VScode</p></blockquote>
+<p>移动端开发工具</p>
+<blockquote class="default"><p>HbuilderX<br/>
+微信小程序开发者工具</p></blockquote></section><section class="doc-section" id="section-"><h1>基本配置</h1><h2 id="sec-3-0"><a id="4_0" rel="noopener noreferrer" target="_blank"></a>4.基本配置</h2>
+<p><strong>林风社交论坛项目官网</strong>：<a href="https://www.linfengtech.cn/" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn</a><br/>
+备用官网：<a href="https://net.linfeng.tech/" rel="noopener noreferrer" target="_blank">https://net.linfeng.tech</a></p>
+<hr/>
+<p>林风社交论坛标准商业版项目由:</p>
+<p>后台前端vue项目linfeng-community-vue、</p>
+<p>后端java项目linfeng-community-backend、</p>
+<p>用户端uniapp项目linfeng-community-uniapp、</p>
+<p>数据库文件组成。sql文件、增量sql、数据库注释文档均在sql文件夹下。</p>
+<pre><code>注意：用户PC网页端是2025.4月推出的独立销售的新项目，采购该项目的客户启动PC网页端前端的教程参考“用户PC端”章节。
+</code></pre>
+<hr/>
+<h3 id="sec-3-1"><a id="linfengcommunitybackend_19" rel="noopener noreferrer" target="_blank"></a>一、后端linfeng-community-backend项目</h3>
+<p>使用数据库可视化工具navicat或者sqlyog等软件创建数据库<br/><div class="img-placeholder">文档截图已省略</div><br/>
+注意字符编码是：<code>utf8mb4</code>,然后导入数据库sql文件。</p>
+<p>如果初次启动后端项目报错了，那就按照<strong>文档中 “常见问题” 栏目 第13条</strong>的要求执行对应SQL，清理quartz表数据。</p>
+<p><strong>注意：<strong>如果还是报错（这个报错基本是因为使用了Linux系统下的MySQL，会出现大小写问题，需要配置），再参考</strong>文档中 “常见问题” 栏目 第3条</strong>的要求配置数据库。</p>
+<hr/>
+<p>首先，导入后端项目linfeng-community-backend到开发工具IDEA中</p>
+<p>（前提条件请配置好：IDEA安装好，JDK环境安装好，Maven安装好，IDEA中设置好Maven路径和JDK路径，Lombok插件安装好）<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，选择导入，<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，找到项目文件夹然后导入IDEA，</p>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，打开项目后，点击File——Project Structure，选择jdk17（注意：V3.0.0起jdk版本为17，V1.25.0以及之前的版本请用jdk8）<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，点击File——Settings，配置你自己本地maven地址，完成后等待Maven依赖下载完成即可。</p>
+<hr/>
+<p><div class="img-placeholder">文档截图已省略</div></p>
+<p>如上图，linfeng-community-backend的application.yml中选择激活dev本地或prod线上配置。</p>
+<p>本项目的基本配置信息都在后台管理系统的“应用配置----&gt;配置中心”进行自定义配置。位置如下图所示，后续启动了后台前端项目linfeng-community-vue后，可以进行配置：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+注意:像数据库和redis配置这些都还在yml中进行。如下图所示：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+按照yml配置数据库名称端口和账号密码，本地测试环境配置application-dev.yml，生产环境配置application-prod.yml，测试环境配置application-test.yml。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+redis配置项在这里（如上图），默认不用改动，密码为空就行。运行后端项目前一定要打开电脑本地的redis。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+然后就可以启动后端项目啦（如上图）。请确保maven已经正常配置。<br/><strong>注意注意</strong>：运行后端api前务必启动redis和mysql哦~<br/><div class="img-placeholder">文档截图已省略</div><br/>
+启动后端项目linfeng-community-backend后控制台输出如上图内容就代表后端启动成功。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+mvn clean和mvn install即可打成jar包，可运行jar就在targer文件夹目录下。<br/>
+如果脱离IDEA，需要单独启动jar包，执行</p>
+<pre><code>java -jar linfeng-community-backend.jar --spring.profiles.active=dev
+</code></pre>
+<p>其中，linfeng-community-backend.jar你的jar包名称，dev(或者prod、test)是你选择的激活配置。</p>
+<hr/>
+<p><strong>注意注意：启动后端项目之前，最重要的事情是</strong><em>一定要先启动redis服务，再启动后端服务</em>。否则后端无法启动，因为后端启动会初始化各种配置项至redis缓存中。</p>
+<hr/>
+<hr/>
+<h3 id="sec-3-2"><a id="linfengcommunityuniapp_70" rel="noopener noreferrer" target="_blank"></a>二、移动端linfeng-community-uniapp项目</h3>
+<h4 id="sec-3-3"><a id="1_71" rel="noopener noreferrer" target="_blank"></a>1.基本配置</h4>
+<p>按如下图配置。找到utils/config.js配置api接口地址。如下图：</p>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+①配置<code>baseUrl</code>,这个就是你后端启动的地址，后端java项目电脑本机启动接口服务默认是8080端口，默认baseUrl不用改。如果后端端口改了，那这里也要改。<br/>
+② 这个<code>domain</code>和<code>websocketUrl</code>不用动。<br/>
+③这个<code>imgResource</code>是用于存储部分前端的图标等静态资源文件的，你需要配置成可访问的远程地址，这些资源文件在商业版压缩包里面（用户端静态资源&amp;IM表情包\resource文件夹下）。默认用的官方演示地址，你上架软件前一定要改成自己的地址哦（如果是电脑本地测试不用着急改），我们会随时切换地址。<br/>
+④这个<code>emojiUrl</code>是私聊表情包资源地址，其详情配置请参考章节“IM部署使用”部分。你如果只是本地运行测试，暂时不需要配置这个地方，等你需要测试私聊IM即时通讯的表情包模块，再配置这里。<br/>
+（imgResource和emojiUrl可以放到服务器同一个站点根目录下，能访问到就行，随便放到服务器上还是云存储空间）。<br/>
+⑤<code>wxMpAppId</code>是微信公众号的AppID，如果你不使用公众号H5端的话，就不用填。<br/>
+⑥<code>wxh5Login</code>为是否使用微信公众号，如果你不使用填false，如果要使用公众号H5版本就填写true。这个参数会作用于公众号自动登录模块。<br/><strong>注意1</strong>：如上图中，分成本地环境配置和线上环境配置两份配置信息。如果本地运行就打开第5到第12行代码。如果线上运行就打开第15行到22行的代码。实际你需要配置的内容就是<code>baseUrl</code>、<code>emojiUrl</code>、<code>imgResource</code>、<code>wxMpAppId</code>和<code>wxh5Login</code>这些地方。<br/><strong>注意2</strong>：线上配置默认是部署了SSL证书的，所以配置以https和wss开头，还需要注意<code>websocketUrl</code>在本地配置和线上配置是不一样的，后缀有变动！</p>
+<hr/>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如上图所示，修改成你的微信小程序appid（<strong>如果你要用小程序版本就一定要改这里</strong>！！）<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图所示，需要使用H5端的话，H5端的腾讯地图key改成你自己的，不然H5端无法定位。<br/>
+申请key的网址（ <a href="https://lbs.qq.com/dev/console/application/mine" rel="noopener noreferrer" target="_blank">https://lbs.qq.com/dev/console/application/mine</a> ）<br/>
+具体设置如下图所示：<br/><div class="img-placeholder">文档截图已省略</div><br/><strong>特别注意</strong>：如果你是新设置的key，一定要检查额度分配，不然无法使用的哦，如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如果你使用安卓或ios，那么需要在高德地图或百度地图配置对应的key值，如下图所示</p>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+按照配置指南对第一个红框处进行填写配置。<br/>
+注意：App端购买地图key的授权有点贵，如果预算有限，建议直接不要App端的发帖带定位功能，直接注释发帖页的选择定位功能入口（如下图所示，增加画红线的两行即可）。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+另外，如果你使用安卓或ios，那么APP的微信支付的appid需要在上图的第二个红框处填写配置。APP的微信支付要去“微信开放平台”认证申请到这个appid，然后去“微信商户平台”申请开通。</p>
+<p><strong>注意</strong>:目前微信的规定是APP应用必须上架才可以申请开通APP端的微信支付。</p>
+<h4 id="sec-3-4"><a id="2_104" rel="noopener noreferrer" target="_blank"></a>2.启动微信小程序</h4>
+<p>接下来，如果你是启动微信小程序：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+按上图所示即可运行小程序，如果你是第一次运行uniapp项目到微信开发者工具，<br/>
+需要去配置一下微信开发者工具的安全端口，不然无法唤起微信开发者工具（具体看博客示例参考             <a href="https://blog.csdn.net/lyx1838102537/article/details/122491185" rel="noopener noreferrer" target="_blank">https://blog.csdn.net/lyx1838102537/article/details/122491185</a> ）。</p>
+<pre><code>注意：根据微信小程序隐私协议设置的最新要求，你需要先去 “微信公众平台 ”上填写用户隐私协议设置。具体请查看 “常见问题” 章节第39条。设置完隐私协议并审核通过后才能调用微信小程序接口权限。
+</code></pre>
+<p>注意1：根据微信小程序的规定，微信公众平台上设置完<strong>小程序隐私协议</strong>才能够实现微信手机号登录！！！具体请查看 “常见问题” 章节第39条。<br/>
+注意2：默认已经注释掉广告插件了，如果需要使用uni AD请打开广告注释并安装广告插件。<br/>
+注意3：uniapp端运行到小程序以后不要着急微信登录，这时会报错“<strong>openid解析失败</strong>”，因为你的后台管理系统的“配置中心”还需要配置小程序appid和密钥。不然无法登录。<br/>
+注意4：微信小程序账号不能是个人的账号，否则，在小程序手机号授权登录的时候，个人号是没有调用手机号接口权限的哦。v1.25.0版本开始支持微信小程序端设置openid一键登录，所以你可以选择后台管理系统的配置中心设置微信小程序端登录方式。</p>
+<h4 id="sec-3-5"><a id="3H5_116" rel="noopener noreferrer" target="_blank"></a>3.启动H5端</h4>
+<p>如果你是启动H5端，按如下图方式启动：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+注意：不需要执行什么命令。直接就能启动。</p>
+<hr/>
+<h4 id="sec-3-6"><a id="4APP_121" rel="noopener noreferrer" target="_blank"></a>4.启动APP端</h4>
+<p>1.安装雷电模拟器或mumu模拟器并配置好环境（其他模拟器也可以，自己挑）参考博客：<a href="https://blog.csdn.net/DarlingYL/article/details/121343740" rel="noopener noreferrer" target="_blank">https://blog.csdn.net/DarlingYL/article/details/121343740</a><br/>
+2.运行，如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/>
+选择标准基座运行即可（测过没问题）。如果模拟器跑不出效果。这时你可以选择使用自定义基座运行，参考官方文档：<a href="https://uniapp.dcloud.net.cn/tutorial/run/run-app.html#customplayground" rel="noopener noreferrer" target="_blank">https://uniapp.dcloud.net.cn/tutorial/run/run-app.html#customplayground</a><br/><div class="img-placeholder">文档截图已省略</div><br/>
+按照文档描述的，打包自定义运行基座后，HBuilder会自动将生成后的apk和ipa包存放在 项目目录/unpackage/debug目录下，文件名分别为<code>android_debug.apk</code>和<code>iOS_debug.ipa</code>。如上图所示，代表可以进行自定义基座打包了。</p>
+<p>此时，你在HBuilderx进行修改代码保存后，模拟器会同步热更新页面效果。</p>
+<hr/>
+<h4 id="sec-3-7"><a id="5_132" rel="noopener noreferrer" target="_blank"></a>5.关于流量主广告</h4>
+<p>注意：代码中默认已经注释掉广告插件代码了，如果你不需要这块可以直接忽略。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图所示，可以选择开启或关闭信息流广告。流量主广告在首页和帖子详情页有展示。<br/>
+如何获取广告的adpid,请仔细阅读：<a href="https://ask.dcloud.net.cn/article/36769" rel="noopener noreferrer" target="_blank">https://ask.dcloud.net.cn/article/36769</a><br/>
+申请会花几天时间才能通过审核。</p>
+<p>申请地址：<a href="https://uniad.dcloud.net.cn/login" rel="noopener noreferrer" target="_blank">https://uniad.dcloud.net.cn/login</a><br/><strong>注意</strong>：如果你的小程序没有申请广告插件，请不要打开如下图这两处注释（默认打开的），打开的话是不能运行成功的。系统会提示你申请插件。不需要广告模块的话，这两块注释掉即可。<br/>
+如果你第一次在HBuilderX运行uniapp项目到微信开发者工具上，会提醒你安装广告插件，然后会出现插件待审核的状态，导致项目无法运行到微信开发者工具，此时，就要把如下图的两行代码注释了。</p>
+<p><div class="img-placeholder">文档截图已省略</div></p>
+<p><strong>提醒</strong>：广告有很多类型，比如插屏广告，信息流广告等。目前启动接入的是信息流广告。如果需要其他类型，自行对接（官方给的demo很详细，对接起来很简单）。</p>
+<h4 id="sec-3-8"><a id="6_150" rel="noopener noreferrer" target="_blank"></a>6.关于手机验证码登录</h4>
+<pre><code>注意：腾讯云短信和阿里云短信您可二选一。
+</code></pre>
+<p>下面介绍的是阿里云短信开通流程：<br/>
+H5端和APP端使用的是手机号验证码登录，开通<code>阿里云短信</code>的地址：<a href="https://dysms.console.aliyun.com/overview" rel="noopener noreferrer" target="_blank">https://dysms.console.aliyun.com/overview</a><br/>
+开通步骤：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+按照系统提示先后逐一申请开通<strong>签名</strong>和<strong>模板</strong>。<br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/>
+如果出现审核几次都通不过的情况，请提交工单和阿里云审核员做沟通解释，一般都能通过的。<br/>
+后台管理系统需要做配置：<br/>
+需要注意，选择关闭选项的时候，用户端发送验证码会自动在用户端界面上返回。所以你在正式环境下需要选择开启选项。阿里云短信和腾讯云短信，二选一。<br/>
+注意：如下图，阿里云短信的短信key和密钥就是阿里云的accesskey和密钥，和阿里云云存储的accesskey和密钥是同一个东西。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-3-9"><a id="7_166" rel="noopener noreferrer" target="_blank"></a>7.微信公众号配置</h4>
+<p>首先，在<code>微信公众平台</code>开通一个服务号。开通后找到公众号的AppId和密钥。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图位置，先配置公众号的AppId和密钥。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，用户端前端也需要配置公众号的AppID哦。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，在微信公众平台配置：业务域名、JS接口安全域名、网页授权域名。这三个域名都填你H5端的域名。例如：<a href="http://h5.xxx.com/" rel="noopener noreferrer" target="_blank">h5.xxx.com</a><br/>
+然后就是微信公众号支付绑定微信商户平台。参考：<a href="https://developers.weixin.qq.com/community/pay/article/doc/0004449a560590f759ed0cbf75d013" rel="noopener noreferrer" target="_blank">https://developers.weixin.qq.com/community/pay/article/doc/0004449a560590f759ed0cbf75d013</a><br/>
+最后，请注意，如果你使用公众号H5的话，H5端的域名请记得配置SSL证书，也就是https访问。</p>
+<h3 id="sec-3-10"><a id="linfengcommunityvue_177" rel="noopener noreferrer" target="_blank"></a>三、后台管理端linfeng-community-vue项目</h3>
+<p><code>Tips：后台前端项目初始账号：admin 密码：123456 记住 记住 记住！</code></p>
+<h4 id="sec-3-11"><a id="1_183" rel="noopener noreferrer" target="_blank"></a>1.基本配置</h4>
+<p>基本配置如下：<br/><strong>node.js版本要求：大于16</strong>才行。</p>
+<p>推荐<strong>nvm</strong>管理工具管理node版本。如果你用的版本npm install有问题，那就用参考版本，保证没问题。</p>
+<pre><code>参考版本:   node.js版本 v18.15.0     npm版本v9.5.0
+</code></pre>
+<p>如下图，在项目的<strong>config/index.js</strong>中配置后端接口即可，本地接口和线上环境接口都在这个文件中配置哦。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+初次启动项目请在vue工程根目录下执行<code>npm install</code>安装依赖；<br/>
+然后执行<code>npm run dev</code>即可在本地启动项目；<br/>
+或者执行<code>npm run build</code>即可在打包出dist文件夹用于项目线上部署；</p>
+<hr/>
+<p><strong>后台前端项目初始账号：admin   密码：123456</strong></p>
+<hr/>
+<h4 id="sec-3-12"><a id="2_203" rel="noopener noreferrer" target="_blank"></a>2.配置中心</h4>
+<p>如下图，配置项统一在“配置中心”配置。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-3-13"><a id="3_206" rel="noopener noreferrer" target="_blank"></a>3.文件的存储配置</h4>
+<p><strong>注意注意</strong>：</p>
+<pre><code>V1.21.0版本开始，私聊IM部分强制本地存储。其他模块的图片视频文件新增minio存储方式（支持阿里云、七牛云、本地存储、minio存储四选一）。
+</code></pre>
+<pre><code>V1.17.0版本开始，私聊IM部分强制本地存储。其他模块的图片视频文件既支持云存储，也支持本地存储（支持阿里云、七牛云、本地存储三选一）。
+</code></pre>
+<pre><code>V1.16.0版本以及之前的用户，除了私聊IM部分，其他图片视频文件都是云存储方式存储。  
+私聊IM部分的文件视频图片是存储在服务器本地的，因为私聊内容属于用户私密内容。
+</code></pre>
+<p>项目的云存储的方式，配置如下图所示：在这里选择你的图片存储类型并进行配置。</p>
+<p>关于如何配置参数：</p>
+<p>七牛云存储的<strong>具体配置</strong>请查看<code>常见问题</code>章节的第37条。<br/>
+阿里云存储的<strong>具体配置</strong>请查看<code>常见问题</code>章节的第38条。<br/>
+本地存储的<strong>具体配置</strong>请方式请查看<code>常见问题</code>章节44条(v1.17.0新增)。<br/>
+minio存储的<strong>具体配置</strong>请方式请查看<code>常见问题</code>章节49条(v1.21.0新增)。</p>
+<p>如果你使用阿里云存储或本地存储或minio存储，那么需要设置视频贴封面，具体方法查看<code>常见问题</code>章节43条。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-3-14"><a id="4_230" rel="noopener noreferrer" target="_blank"></a>4.邮箱验证码登录</h4>
+<p>如果需要邮箱验证码登录功能（如果不需要请跳过本节），需要在后端项目application.yml中配置参数，如下图所示：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p>这里的password参数是指 邮箱授权码，而不是你的qq密码。<br/><div class="img-placeholder">文档截图已省略</div><br/><strong>注意</strong>：yml中一共有两处邮箱需要配置！一个是图A，一个如上图B的email.send处！（有用户反应配置不成功，其实就是漏了如上图B的email.send配置）</p>
+<p><strong>如何找到图A中的配置参数？</strong><br/>
+首先，我们需要打开QQ邮箱的SMTP服务，因为QQ邮箱对于一般的用户都是默认关闭SMTP服务的。<br/>
+打开QQ邮箱，点击设置。点击帐户。<br/>
+找到SMTP服务的选项，可以看到此处默认是关闭的，点击开启，然后腾讯会进行一些身份验证，身份验证通过以后，腾讯会给出一个用于使用SMTP的16位口令，此处这个口令就是yml要填写的password参数。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+注意：你也可以通过更换yml配置，换成其他邮箱，如163邮箱、谷歌邮箱等。</p>
+<hr/>
+<h4 id="sec-3-15"><a id="5_245" rel="noopener noreferrer" target="_blank"></a>5.关于微信支付</h4>
+<p>如果你在本地想测微信支付，支付回调部分是不行的，付完款会员状态或者余额并没有改变。部署线上后即可。<br/>
+关于微信支付的基本配置，如下图所示：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+注意：微信商户平台的商户密钥用<code>API V2</code>的。<br/>
+注意：微信商户平台的商户密钥用<code>API V2</code>的。<br/>
+注意：微信商户平台的商户密钥用<code>API V2</code>的。<br/>
+如果APP端的支付，需要去“微信开放平台”申请APPID，微信开放平台初次认证要交费，并且如下图uniapp端mainfest.json配置这个ID才可以。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h4 id="sec-3-16"><a id="6_256" rel="noopener noreferrer" target="_blank"></a>6.关于微信小程序端客服</h4>
+<p>微信小程序端可以直接在“微信公众平台”上绑定客服，具体设置如下图所示。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-3-17"><a id="7_259" rel="noopener noreferrer" target="_blank"></a>7.关于百度智能云内容审核配置</h4>
+<p>登录百度云进入内容审核平台（<a href="https://ai.baidu.com/censoring#/" rel="noopener noreferrer" target="_blank">百度内容审核平台</a>），根据4步引导完成服务的开通和调用。</p>
+<p>1、领取额度：首次注册平台会赠送一定的接口调用额度，在开发或者试运营阶段额度应该是足够的，个人认证和企业认证赠送的额度不一样，各位用户可根据自己的实际情况认证。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p>2：创建应用，内容审核平台用到三个配置项，分别是AppID，APIKey，SecretKey。应用创建完就自动生成。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p><div class="img-placeholder">文档截图已省略</div></p>
+<p>3：创建策略，操作也非常简单，演示环境是直接按照系统推荐的策略勾选的，<strong>这里要注意的是策略勾选的越多，收费就越贵，各位在配置策略的时候一定要注意成本，一些无关紧要的策略可以不用勾选，具体收费标准请参考百度内容审核的收费说明。</strong><br/><div class="img-placeholder">文档截图已省略</div></p>
+<p><div class="img-placeholder">文档截图已省略</div></p>
+<p>后台配置百度平台的三个参数，同时我们提供了审核开关，关闭了之后就不会再调用内容审核接口。<br/><div class="img-placeholder">文档截图已省略</div></p></section><section class="doc-section" id="section-"><h1>常见问题</h1><p>林风社交论坛标准版常见问题解答：</p>
+<p><strong>林风社交论坛项目官网</strong>：<a href="https://www.linfengtech.cn/" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn</a><br/>
+备用官网：<a href="https://net.linfeng.tech/" rel="noopener noreferrer" target="_blank">https://net.linfeng.tech</a></p>
+<hr/>
+<h3 id="sec-4-0"><a id="1openid_6" rel="noopener noreferrer" target="_blank"></a>1.为什么微信小程序登录显示“openid解析失败”？</h3>
+<p>答：请在后台管理系统配置中心配置你的小程序appid和密钥，确保配置正确即可。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h3 id="sec-4-1"><a id="2Redis_10" rel="noopener noreferrer" target="_blank"></a>2.运行项目后显示“Redis服务异常”？</h3>
+<p>答：你本地的redis服务未打开，请打开，打开后重启后端项目即可。</p>
+<hr/>
+<h3 id="sec-4-2"><a id="3__Failure_obtaining_db_row_lock_Table_linfengcommunityQRTZ_LOCKS_doesnt_exist_13" rel="noopener noreferrer" target="_blank"></a>3.  数据库导入或运行时报错Failure obtaining db row lock: Table 'linfengcommunity.QRTZ_LOCKS' doesn't exist</h3>
+<p>（<strong>如果你是linux操作系统（或者项目部署至linux服务器）一定遇到过这个问题！！！</strong>）<br/>
+答：由于Linux区分字母大小写，所以就存在问题。参考博客（<a href="https://blog.csdn.net/weixin_43963518/article/details/136651024" rel="noopener noreferrer" target="_blank">https://blog.csdn.net/weixin_43963518/article/details/136651024</a> ）<br/>
+注意：修改mysql配置后一定要重启mysql或者重新加载配置！不然没效果的！</p>
+<hr/>
+<h3 id="sec-4-3"><a id="4_19" rel="noopener noreferrer" target="_blank"></a>4.消息管理列表的消息如何清理？</h3>
+<p>答：消息定期清理任务如图所示，可以自行定义清理多久前的数据，需要的话可以开启。如果消息要留存就定期备份数据库。注意：清理的消息不包括用户私聊的数据。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h3 id="sec-4-4"><a id="5_23" rel="noopener noreferrer" target="_blank"></a>5.话题在哪里新建？</h3>
+<p>答：<br/>
+v1.18.0以及之前的版本：<br/>
+话题由圈子管理员或圈主在用户端的圈子详情页的菜单中的新建话题入口创建。<br/>
+前提必须是该圈子的圈主或圈子管理员。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+注意注意：v1.19.0以及之后的版本，后台管理端话题管理也可以创建话题了，如下图：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h3 id="sec-4-5"><a id="6Swagger_32" rel="noopener noreferrer" target="_blank"></a>6.Swagger文档地址访问地址</h3>
+<p>答：本地项目访问路径是：<a href="http://localhost:8080/doc.html" rel="noopener noreferrer" target="_blank">http://localhost:8080/doc.html</a><br/>
+线上路径：你的后端接口地址 + /doc.html</p>
+<pre><code>注意：Java后端工程的application-prod.yml中默认生产环境的swagger是关闭状态的。如果你要开启请前往application-prod.yml配置。
+</code></pre>
+<hr/>
+<h3 id="sec-4-6"><a id="7_39" rel="noopener noreferrer" target="_blank"></a>7.微信小程序提交审核阶段需要注意什么？</h3>
+<p>答：具体内容查看”线上部署“章节的第三部分。</p>
+<h3 id="sec-4-7"><a id="8H5APP_42" rel="noopener noreferrer" target="_blank"></a>8.H5和APP端用户注册的默认头像在哪里修改？</h3>
+<p>答：V1.16.0以及以上的新版本，直接在后台配置中心修改默认头像。如下图：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h3 id="sec-4-8"><a id="9_47" rel="noopener noreferrer" target="_blank"></a>9.帖子可以后台管理员审核后再发布吗？</h3>
+<p>答：可以。在如下图位置可以开启全局帖子审核。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+开启后，在帖子管理模块审核上下架帖子。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h3 id="sec-4-9"><a id="10_53" rel="noopener noreferrer" target="_blank"></a>10.如何修改首页的帖子格式为瀑布流格式？</h3>
+<p>答：如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+具体样式可以点击查看再选择。<br/>
+注意：V1.24.0以及之前的版本纯文字贴、付费贴在瀑布流列表不展示。其他帖子都可以在瀑布流列表展示。1.25.0以及之后的版本纯文字贴也可以显示在瀑布流中，付费贴在瀑布流列表不展示。<br/><strong>从V1.20.0版本开始</strong>，用户端主页，用户可以自由设置帖子样式。后台的配置作为默认配置，对未设置过展示样式的用户依旧生效。</p>
+<hr/>
+<h3 id="sec-4-10"><a id="11_60" rel="noopener noreferrer" target="_blank"></a>11.项目的基础参数配置在后台哪里修改？</h3>
+<p>答：<br/>
+绝大部分配置都在<code>后台管理系统</code>——&gt;<code>应用配置</code>——&gt;<code>配置中心</code>。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+文件存储配置在<code>后台管理系统</code>——&gt;<code>应用配置</code>——&gt;<code>文件上传</code>——&gt;<code>文件存储配置</code>。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h3 id="sec-4-11"><a id="12_67" rel="noopener noreferrer" target="_blank"></a>12.不想把时间格式化为"几天前"的这种中文形式，该怎么处理。</h3>
+<p>答：去除 timeFormat 方法即可。如图所示。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h3 id="sec-4-12"><a id="13quartz_71" rel="noopener noreferrer" target="_blank"></a>13.第一次运行项目，quartz报错如图：</h3>
+<p><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/>
+答：清理quartz表即可解决：<br/>
+在数据库中清理quartz表，删除表数据即可。<br/>
+直接复制如下sql在MySQL中执行，选择“大写的方式”或“小写的方式”中的一种即可，然后重启后端服务即可：</p>
+<pre><code>//大写的方式
+DELETE FROM `QRTZ_LOCKS`;
+DELETE FROM `QRTZ_CALENDARS`;
+DELETE FROM `QRTZ_FIRED_TRIGGERS`;
+DELETE FROM `QRTZ_PAUSED_TRIGGER_GRPS`;
+DELETE FROM `QRTZ_SCHEDULER_STATE`;
+DELETE FROM `QRTZ_BLOB_TRIGGERS`;
+DELETE FROM `QRTZ_CRON_TRIGGERS`;
+DELETE FROM `QRTZ_SIMPLE_TRIGGERS`;
+DELETE FROM `QRTZ_SIMPROP_TRIGGERS`;
+DELETE FROM `QRTZ_TRIGGERS`;
+DELETE FROM `QRTZ_JOB_DETAILS`;
+//小写的方式
+delete from `qrtz_locks`;
+delete from `qrtz_calendars`;
+delete from `qrtz_fired_triggers`;
+delete from `qrtz_paused_trigger_grps`;
+delete from `qrtz_scheduler_state`;
+delete from `qrtz_blob_triggers`;
+delete from `qrtz_cron_triggers`;
+delete from `qrtz_simple_triggers`;
+delete from `qrtz_simprop_triggers`;
+delete from `qrtz_triggers`;
+delete from `qrtz_job_details`;
+
+
+</code></pre>
+<p><strong>注意！！！</strong>：如果你的数据库区分大小写，那么需要用“小写的方式”的sql执行~  否则执行会报错。<br/>
+如果你都按照上面说的执行了sql清楚文件，但还是报错（一般这种情况就是数据库在Linux环境下发生），那么请再参考文档中 <code>常见问题</code> 章节 "第3条"的要求配置数据库。</p>
+<hr/>
+<h3 id="sec-4-13"><a id="14xxx_request__110" rel="noopener noreferrer" target="_blank"></a>14.项目本地运行时，报“xxx不在以下 request 合法域名列表中”</h3>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+答：勾选如图选项<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h3 id="sec-4-14"><a id="15logologo_115" rel="noopener noreferrer" target="_blank"></a>15.请问登录页面的项目logo和首页左上角logo在哪里设置？</h3>
+<p>答：logo设置在如图这个地方。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h3 id="sec-4-15"><a id="16_119" rel="noopener noreferrer" target="_blank"></a>16.请问自动发帖机器人如何使用？</h3>
+<p>答：在定时任务列表，可以自定义执行时间。不要的话暂停此任务即可，需要立即执行的话点击“立即执行”。不会写cron表达式的话可以用：<a href="https://cron.qqe2.com/" rel="noopener noreferrer" target="_blank">https://cron.qqe2.com/</a>  在线生成器。发布的帖子内容来自开放接口。</p>
+<p>如果你觉得对该开放接口提供内容不满意，也可以自行寻找其他接口二次开发。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h3 id="sec-4-16"><a id="17_125" rel="noopener noreferrer" target="_blank"></a>17.私聊模块的业务流程是怎么样的？</h3>
+<p>答：具体请查看<code>使用手册</code>章节的第（19）条。</p>
+<hr/>
+<h3 id="sec-4-17"><a id="18_128" rel="noopener noreferrer" target="_blank"></a>18.参数管理模块的数据可以删除嘛</h3>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+答：参数管理 页面的参数不能乱删，会引起项目报错！！！这个页面留着的原因主要是为了方便给开发者<strong>添加配置参数</strong>进行二次开发用的，默认的这些参数名称不要乱改。如果要设置参数值，在“配置中心”页面进行配置。安全起见，各位开发者也可以将此页面隐藏起来。</p>
+<hr/>
+<h3 id="sec-4-18"><a id="19uniappnpm_install_132" rel="noopener noreferrer" target="_blank"></a>19.uniapp端首次运行需要执行npm install嘛？</h3>
+<p>答：商业版不需要，开源版需要。商业版的uview是在项目根目录下的<strong>且经过改造处理</strong>。</p>
+<hr/>
+<h3 id="sec-4-19"><a id="20_135" rel="noopener noreferrer" target="_blank"></a>20.请问抽奖模块如何设置使用？</h3>
+<p>答：在后台奖品设置中请保持奖品数量为<strong>8个</strong>。不要超过8个也不要小于8个。<br/>
+抽奖几率填写范围在0.01-1.00之间，填写时不要超过小数点两位。数字填写越小，抽中几率越小。抽奖时会根据此抽奖几率数据计算权重。</p>
+<hr/>
+<h3 id="sec-4-20"><a id="21_139" rel="noopener noreferrer" target="_blank"></a>21.圈子中圈主和圈子管理员的权限分别有哪些？</h3>
+<p>答：圈主的权限：1.可删除本圈子内的任意帖子；2.可在圈内置顶本圈子内的任意帖子；3.举报 ；4.移除成员； 5.新建话题； 6.转让圈子；7.解散圈子；8.黑名单成员管理；9.设置进圈问答，进圈审核；<br/>
+管理员权限：1.管理删除本圈子内的帖子；2.举报；3.新建话题；4.黑名单成员管理；5.进圈审核；<br/>
+普通用户：1.可删除自己的帖子；2.举报</p>
+<hr/>
+<h3 id="sec-4-21"><a id="22_145" rel="noopener noreferrer" target="_blank"></a>22.进圈问答审核流程是怎么样的</h3>
+<p>答：具体请查看<code>使用手册</code>章节的第（22）条。</p>
+<hr/>
+<h3 id="sec-4-22"><a id="23IP_148" rel="noopener noreferrer" target="_blank"></a>23.关于腾讯IP精确定位的使用</h3>
+<p>答：项目中使用的IP属地定位功能默认是免费版本的（一般来说足够用了）。如果你想用腾讯IP精准定位，那么如下图所示进行设置（注释51行，打开52-55行）。然后你需要去腾讯地图申请key。申请地址：<a href="https://lbs.qq.com/dev/console/application/mine" rel="noopener noreferrer" target="_blank">https://lbs.qq.com/dev/console/application/mine</a><br/><div class="img-placeholder">文档截图已省略</div><br/>
+申请以后你的key填写在如下图所示位置：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-23"><a id="24_153" rel="noopener noreferrer" target="_blank"></a>24.海报功能部署至服务器后无法生成海报</h3>
+<p>答：需要把字体文件simsunb.ttf文件（这个文件在后端linfeng-community-backend文件夹里，与pom.xml在同一级目录）上传至服务器上的jar包同级目录下。如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/><strong>要特别注意</strong>，有人说，我没放这个文件，它就自动生成了这个文件，注意那个自动生成的是无效的，它是0 KB，而有效的字体文件是如图框中的2MB多。如果出现这个情况，删了那个0 kb的然后重新上传即可。</p>
+<h3 id="sec-4-24"><a id="25https_157" rel="noopener noreferrer" target="_blank"></a>25.生成海报提示“分享图片不是https格式”？</h3>
+<p>答：<strong>V1.22.0</strong>版本开始，生成的海报分享图片允许http格式以及https格式。<strong>不会再存在这个问题。</strong></p>
+<p><strong>V1.21.0版本</strong>之前的用户，生成海报得图片需要以https开头，不能http开头。所以，如果你使用了七牛云存储，需要将协议改成https，如下图所示：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如果你使用阿里云存储，默认就是https开头。<br/>
+如果你使用本地存储，记得给后端接口域名配个SSL证书。<br/>
+如果你使用minio存储，你配置的minio域名记得配个SSL证书。</p>
+<h3 id="sec-4-25"><a id="26mysql_8_165" rel="noopener noreferrer" target="_blank"></a>26.使用mysql 8版本需要做什么配置调整？</h3>
+<p>答：直接使用mysql8版本或者mysql5.7里面的高版本（如5.7.38），在执行/app/message/num接口会有以下报错：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+解决方案：<br/>
+修改 MySQL 配置文件，Windows 操作系统中为 <code>my.ini</code> 文件，Linux 操作系统中使用 RPM 安装包安装后配置文件位于 <code>/etc/my.cnf</code>。<br/>
+在 <code>[mysqld]</code> 添加：</p>
+<pre><code class="language-undefined">sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+
+</code></pre>
+<p>重启 MySQL 服务。</p>
+<h3 id="sec-4-26"><a id="27_178" rel="noopener noreferrer" target="_blank"></a>27.发帖图片过大，能不能压缩用户上传的图片再上传？</h3>
+<p>答：V1.24.0及之前的版本可以。V1.25.0及之后的新版本不再支持压缩，如果使用云存储的话，可以去七牛云或阿里云后台设置开启自动压缩上传图片。</p>
+<p>V1.24.0及之前的版本默认是无压缩的。如果需要压缩，就进行以下的简单操作。<br/>
+打开linfeng-community-uniapp前端项目，打开如下图的uview-ui/components/u-upload/u-upload.vue文件，按照图中的方式，打开第429行的注释，然后注释掉第430行。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如果你需要控制压缩图片的尺寸，如下图所示，在本文件的第482行，483行调整压缩的最大尺寸和最小尺寸值。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-27"><a id="28_186" rel="noopener noreferrer" target="_blank"></a>28.为什么后台管理系统启动后，在登录页没有出现验证码？</h3>
+<p>答：因为你的后端服务没启动，如果确定后端服务已启动并能正常访问到，那么也可能你的后台前端linfeng-community-vue项目没有正确配置后端服务接口地址，配置正确即可。</p>
+<h3 id="sec-4-28"><a id="29_188" rel="noopener noreferrer" target="_blank"></a>29.轮播图模块配置外链后，在微信小程序端无法跳转？</h3>
+<p>答：请在微信公众平台上将该链接添加到<code>业务域名</code>，不然微信小程序不让跳转。</p>
+<h3 id="sec-4-29"><a id="30V1250_javalangNoClassDefFoundError_javaxxmlbindDatatypeConverter_190" rel="noopener noreferrer" target="_blank"></a>30.V1.25.0及之前的版本解决报错 java.lang.NoClassDefFoundError: javax/xml/bind/DatatypeConverter</h3>
+<p>答：V1.25.0及之前的版本请使用JDK8版本。V3.0.0版本起请使用JDK17。</p>
+<h3 id="sec-4-30"><a id="31_193" rel="noopener noreferrer" target="_blank"></a>31.如何修改官方圈子的圈主</h3>
+<p>答：有两种方式，<br/>
+1.用户端转让：由圈主自己转给其他圈内用户（在圈子菜单中有转让按钮）<br/>
+2.平台管理员转让：在后台管理系统的圈子管理模块中找到对应圈子，点击修改按钮，找到圈主UID进行修改即可。</p>
+<h3 id="sec-4-31"><a id="32_199" rel="noopener noreferrer" target="_blank"></a>32.同一个宝塔服务器部署了两个站点，部分数据串一起了是为什么</h3>
+<p>答：首先，同一台服务器部署两个项目需要对应两个数据库，其次，本项目使用了redis作为缓存，redis的库不能是同一个，需要去yml里修改成不同的redis库存储。</p>
+<h3 id="sec-4-32"><a id="33_201" rel="noopener noreferrer" target="_blank"></a>33.后台管理端需要设置的常见的页面跳转路径配置有哪些</h3>
+<p>答：跳转路径大家可以参考演示站点后台管理端配置的路径地址：<a href="https://dev.linfeng.tech/" rel="noopener noreferrer" target="_blank">https://dev.linfeng.tech</a><br/>
+常见的跳转地址如下：</p>
+<table><thead><tr><th>页面</th><th>跳转路径</th></tr></thead><tbody><tr><td>首页</td><td>/pages/index/index</td></tr><tr><td>广场页</td><td>/pages/square/square</td></tr><tr><td>消息页</td><td>/pages/message/message</td></tr><tr><td>我的</td><td>/pages/my/my</td></tr><tr><td>私信页</td><td>/pages/im/chat-list/chat-list</td></tr><tr><td>搜索页</td><td>/pages/search/search</td></tr><tr><td>帖子详情页</td><td>/pages/post/detail?id=填对应帖子ID</td></tr><tr><td>会员页</td><td>/pages/user/vip/vip</td></tr><tr><td>长文详情页</td><td>/subpages/content/article/article?id=填对应帖子ID</td></tr><tr><td>长文模块专区</td><td>/pages/my/post?type=3</td></tr><tr><td>短视频模块</td><td>/pages/post/video</td></tr><tr><td>投票模块专区</td><td>/pages/my/post?type=4</td></tr><tr><td>圈子分类列表</td><td>/pages/topic/class-list</td></tr><tr><td>圈子详情页</td><td>/pages/topic/detail?id=填对应圈子ID</td></tr><tr><td>积分签到页</td><td>/pages/sign/sign</td></tr><tr><td>举报反馈页</td><td>/pages/report/list</td></tr><tr><td>举报填写页</td><td>/pages/report/report</td></tr><tr><td>积分抽奖页</td><td>/pages/luck-draw/luck-draw</td></tr><tr><td>隐私设置页</td><td>/pages/user/edit-info/setting</td></tr><tr><td>我的帖子页</td><td>/pages/my/post</td></tr><tr><td>我的账户页</td><td>/pages/account/account</td></tr><tr><td>用户经验等级</td><td>/subpages/content/level/level</td></tr><tr><td>排行榜</td><td>/subpages/content/rank/rank</td></tr><tr><td>关于平台</td><td>/subpages/content/about/about</td></tr><tr><td>我的设置</td><td>/subpages/content/setting/setting</td></tr></tbody></table>
+<p>以上是一些常用的页面举例，还有一小部分未列出。</p>
+<h3 id="sec-4-33"><a id="34_234" rel="noopener noreferrer" target="_blank"></a>34.如何使用微信小程序的流量主广告插件</h3>
+<p>答：<br/>
+目前，默认代码中是关闭了广告插件代码的，如果需要使用请打开代码注释。如果不需要可以忽略，不用做改动。<br/>
+打开广告组件代码注释后，第一次运行到小程序端会提示安装流量主广告插件。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+关于安装的方案：<br/>
+方案一：在 HBuilderX 运行到微信开发者工具，在微信的开发者工具调试控制台会输出申请插件的链接，点击后弹出申请确认框，然后点击<code>确定</code>按钮<br/>
+方案二：登陆微信公众平台<a href="https://mp.weixin.qq.com/" rel="noopener noreferrer" target="_blank">https://mp.weixin.qq.com/</a>，点击左侧栏<code>设置</code>，然后找到顶部页签<code>第三方设置</code>，向下滚动屏幕到<code>插件管理</code>, 点击<code>添加插件</code>按钮，搜索<code>uni-ad</code>和<code>珊瑚运营平台</code>并添加。<br/><strong>注意注意</strong>：申请珊瑚运营平台需要几天时间，为了先运行项目，可以直接进入linfeng-community-uniapp项目，打开components/linfeng-ad/linfeng-ad.vue文件，注释如下图所示的<strong>第6行代码以及第11行代码</strong>。<br/>
+然后，<strong>一定要重启</strong>HBuilderX，<strong>重启</strong>微信开发者工具，这样就可以正常启动微信小程序项目啦。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-34"><a id="35sql_245" rel="noopener noreferrer" target="_blank"></a>35.关于后台管理系统的sql监控账号密码多少？</h3>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+答：部署到线上后，首先查看管理端的sql监控路径，先修改成自己的。如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+具体地址就是后端接口路径+后缀/druid/sql.html<br/>
+然后，如果部署本地localhost，则没有限制账号密码。如果部署线上的话，账号密码在后端application-prod.yml查看。如下图：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-35"><a id="36test_252" rel="noopener noreferrer" target="_blank"></a>36.关于后台管理系统登录页默认的test账号如何去除？</h3>
+<p>答：默认去除的。一小部分用户打开后端管理系统登录页会出现默认填充的test账号和密码。如需去除，请你打开后台管理系统前端vue项目，按照如下图操作即可：<br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-36"><a id="37_256" rel="noopener noreferrer" target="_blank"></a>37.七牛云存储如何配置？</h3>
+<p>配置在如下图的位置：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+前往七牛云官网（没账号的话要注册并实名认证）设置并获取配置项：<br/>
+地址：<a href="https://portal.qiniu.com/kodo/bucket" rel="noopener noreferrer" target="_blank">https://portal.qiniu.com/kodo/bucket</a><br/><div class="img-placeholder">文档截图已省略</div><br/>
+然后绑定域名。<br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/>
+要进行七牛云域名的https配置。SSL证书申请的具体配置步骤请参考：<br/><a href="https://blog.csdn.net/wangqjpp/article/details/125773203" rel="noopener noreferrer" target="_blank">https://blog.csdn.net/wangqjpp/article/details/125773203</a><br/>
+域名创建成功后如下图所示，这里我们选择DNS验证，需要用到图中的主机记录和记录值。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+进入你的云服务厂商（这里用阿里云演示）的DNS设置后台添加记录。如下图所示：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+点击[七牛云]的验证按钮，我们会发现验证成功，然后我们点击刚刚配置的域名，进到域名信息页面，我们把CNAME的值复制下来再去你的云服务器厂商（这里用阿里云演示）解析。具体解析步骤查看：<a href="https://developer.qiniu.com/fusion/kb/1322/how-to-configure-cname-domain-name" rel="noopener noreferrer" target="_blank">https://developer.qiniu.com/fusion/kb/1322/how-to-configure-cname-domain-name</a><br/>
+dns部分设置如下图所示：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p>域名绑定成功，https配置成功后，将响应的参数设置到后台管理系统中。AccessKey和SecretKey在如下路径获取:<br/><a href="https://portal.qiniu.com/user/key" rel="noopener noreferrer" target="_blank">https://portal.qiniu.com/user/key</a><br/>
+最终的基本设置如下图所示：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-37"><a id="38OSS_280" rel="noopener noreferrer" target="_blank"></a>38.阿里云OSS存储如何配置？</h3>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+先选择开通OSS<br/><div class="img-placeholder">文档截图已省略</div><br/>
+然后选择创建<br/><div class="img-placeholder">文档截图已省略</div><br/>
+箭头指的地方注意 Bucket名称自己取，其他的如图所示，没有箭头的默认不用动。<br/>
+地域请选择 <code>华南1深圳</code><br/>
+读写权限<code>公共读</code><br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，鼠标移动到右上角的头像，就能看到AccessKey管理，<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p>找到AccessKey管理页面。如上图，获取AccessKeyId和AccessKeySecret。</p>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，域名和BucketName两个打码的地方填的是你的Bucket名称。<br/>
+举个例子：假设你的BucketName为<code>linfengbbs</code>，那么<code>域名</code>就填写成<code>https://linfengbbs.oss-cn-shenzhen.aliyuncs.com</code></p>
+<h3 id="sec-4-38"><a id="39_300" rel="noopener noreferrer" target="_blank"></a>39.关于微信小程序隐私保护协议更新，微信公众平台需要修改什么？</h3>
+<p>林风社交论坛微信小程序端必须要设置隐私保护协议才能使用。请登录你的微信公众平台，选择侧边栏"设置"——&gt;"基本设置"，找到如下图所示位置，选择更新用户隐私保护指引：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如下图，不要漏填，不然微信小程序端很多接口都无法使用！（例如：微信一键获取手机号功能，海报保存功能，发帖页面的图片上传等功能如果不开通隐私保护协议是无法使用的哦！！！）<br/><div class="img-placeholder">文档截图已省略</div><br/>
+注意：得写详细点，有部分用户有被驳回的情况，驳回的原因基本是语言描述不够详细，你需要用自己的语言描述详细点。</p>
+<p>例如，如下图的写法也可以过审（仅供参考）：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+你要上架林风社交论坛标准商业版的微信小程序端，这块必须填写完整，微信新规定。</p>
+<p>注意：如果不生效，</p>
+<ol><li>清理微信开发者工具的缓存，如下图所示。</li><li>关闭微信开发者工具和HBuilderX，然后重启项目</li><li>隐私协议设置后，需要一定时间的微信官方审核（一般需要1到2天），必须显示审核状态已通过才行！！</li><li>在隐私协议设置刚审核通过后，再多等个几分钟！</li></ol>
+<pre><code>微信小程序v1.25.0版本起新增了openid一键登录功能，如果你不需要小程序的手机号登录，那就可以不设置手机号的隐私协议了。
+</code></pre>
+<p><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-39"><a id="40_321" rel="noopener noreferrer" target="_blank"></a>40.微信小程序登录功能无法使用</h3>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+答：这是因为你没有在微信公众平台上设置微信小程序的隐私协议。设置的方法请查看如上<code>第39条</code>。<br/>
+另外，不要用微信公众平台的个人账号或测试号登录，也是没有权限的。<br/>
+还有，后台管理系统的配置中心，一定要正确配置你的小程序appid和密钥。<br/>
+注意：v1.25.0版本开始，微信小程序支持开启仅openid登录，也支持开启手机号登录，如下图所示：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-40"><a id="41H5_328" rel="noopener noreferrer" target="_blank"></a>41.不需要微信公众号，但在微信浏览器H5登录的时候提示公众号参数未配置</h3>
+<p>答：如果你用到H5版本，但是又不需要微信公众号版本，那么，由于你没有配置微信公众号参数信息，在微信浏览器H5登录的时候会提示公众号参数未配置。</p>
+<p><strong>V1.16.0</strong>版本起，只要在如下图这里设置false就可以：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-41"><a id="42_334" rel="noopener noreferrer" target="_blank"></a>42.微信小程序端发帖页面点击上传图片无效如何处理？</h3>
+<p>答：<br/>
+（1）微信小程序必须设置了隐私协议，设置的方法请查看如上<code>第39条</code>。<br/>
+（2）后台管理系统必须正确配置好了你自己的云存储信息，保证图片可以上传到云存储空间。设置的位置在：应用配置》文件上传》云存储配置。<br/>
+（3）请在微信公众平台上设置好你的合法域名。uploadFile和download域名要填写你的云存储域名（如果你用本地存储的话就填后端接口域名）！</p>
+<h3 id="sec-4-42"><a id="43_340" rel="noopener noreferrer" target="_blank"></a>43.阿里云存储或本地存储视频帖没有封面？</h3>
+<p>注意：<strong>V1.21.0版本开始</strong>，设置方法如下：找到utils/storage-config.js,修改成你的存储方式，如下图所示。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+本地存储用的是固定封面。<br/>
+所以在选择一种文件的存储方式后，就尽量别做调整，否则要调整前端配置。</p>
+<h3 id="sec-4-43"><a id="44_345" rel="noopener noreferrer" target="_blank"></a>44.如何使用本地存储功能？</h3>
+<p>v1.17.0版本起，支持本地存储。<br/>
+如果本地测试配置application-dev.yml，如果线上配置application-prod.yml。<br/>
+设置方式如下：<br/>
+在后端yml中配置文件存储路径，如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+在后台管理端选择使用本地存储，并配置后端域名，如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如果你在电脑本地测试，这个后端接口域名就填写为：</p>
+<pre><code>http://localhost:8080/
+</code></pre>
+<p>如果你部署在服务器上，这个后端接口域名就填写为：你线上的后端接口。</p>
+<p>注意1：私聊模块的数据都是走本地存储，其他功能模块可自主选择存储方式<br/>
+注意2：如果你选择云存储，由于私聊模块的数据都是走本地存储，所以yml文件中linfeng.path.image、linfeng.path.video、linfeng.path.file这三个地址还是需要填写好。<br/>
+注意3：不推荐使用本地存储。有条件请用云存储或minio存储。</p>
+<hr/>
+<p>关于这三个路径的配置，如果你是windows系统，路径填写方式如下：<br/><code>D:\linfengcommunity\image\</code><br/>
+如果linux的话路径方式如下：<br/><code>/data/linfeng/image</code></p>
+<hr/>
+<h3 id="sec-4-44"><a id="45V1160_374" rel="noopener noreferrer" target="_blank"></a>45.V1.16.0及之前版本中抽奖模块图片上传问题处理方案</h3>
+<p>答：这是V1.16.0及之前部分版本中没有及时更新的小问题。请按照如下图方式将linfeng-community-vue\src\views\modules\admin\luckdraw-add-or-update.vue第216行的img修改成image即可<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-45"><a id="46_378" rel="noopener noreferrer" target="_blank"></a>46.微信小程序上传到微信公众平台包的大小超出限制了怎么办</h3>
+<p>答：情况一：没有二次开发的情况下，如下图，请选择<code>发行</code>,请注意不是运行！选择<code>发行</code>再在微信开发者工具中点击上传，是不会超出的哦<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p>情况二：做过二次开发的情况，请你把新增的页面放到subpages分包下面。新增的静态图片尽量改成远程可访问的url地址，尽量不要放在uniapp项目本地。不然很容易超出2048KB。</p>
+<h3 id="sec-4-46"><a id="47_384" rel="noopener noreferrer" target="_blank"></a>47.如何整合到自己系统</h3>
+<p>答：V1.18.0版本新增单点登录。你可以在自己的系统中整合我们的系统，让用户无感登录。<br/>
+对接的示例代码如下：</p>
+<pre><code>&lt;template&gt;
+	&lt;view&gt;
+		&lt;view&gt;跳转并自动登录测试&lt;/view&gt;
+		&lt;button type="primary" @click="goToLinfengCommunity"&gt;跳转到论坛&lt;/button&gt;
+	&lt;/view&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			goToLinfengCommunity() {
+				var yourscret = 'iwu156cdsrena0f' //必填(密钥在后端application.yml文件中)
+				var phone = '13569102222' //必填(用户唯一标识)
+				var name = '张三' //可选填
+				var avatar = '' //可选填(填完整图片url)
+				var remark = '我的个性签名' //可选填
+				var gender = 0 //可选填(0未知，1男，2女)
+
+				this.$H.post('user/thirdLogin', {
+					secret: yourscret,
+					thirdPhone: phone,
+					thirdName: name,
+					avatar: avatar,
+					remark: remark,
+					gender: gender
+				}).then(res =&gt; {
+					if (res.code == 0) {
+						console.log('请求获取的token为：', res.token)
+						// #ifdef H5
+						window.open("https://h5.linfeng.tech/#/pages/user/go-login?accessToken=" + res.token)
+						// #endif
+					} else if (res.code == 500) {
+						uni.showToast({
+							mask: res.msg
+						})
+					}
+				});
+			}
+		}
+	}
+&lt;/script&gt;
+
+&lt;style&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p>请注意，如上代码提供了第三方应用跳转到我们H5版本并且实现无感登录的示例。<br/>
+this.$H.post这个是一个post请求（不同的第三方应用post请求封装方式不同，这里我只是在本项目的uniapp代码中做一个发起post请求的demo演示），请求参数已经在代码中详细列出来了。这个接口你可以直接到swagger文档去测试，里面也有。<br/>
+整体思路可以归纳为：当你自己的系统中的用户点击一个链接或按钮时候，发起<code>https://api.xxx.com/app/user/thirdLogin</code>这个接口请求获取token，然后跳转到<code>https://h5.xxx.com/#/pages/user/go-login?accessToken= 填获取的token</code><br/>
+这样就可以自动登录并跳转到论坛首页了。<br/>
+如下图，后端yml中首先要配置开启这个接口，然后密钥要配置正确。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+流程图如下，供参考：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-47"><a id="48uniappappidmainfestjson_447" rel="noopener noreferrer" target="_blank"></a>48.第一次使用uniapp项目，提示appid不存在，请在mainfest.json中重新获取。</h3>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+答：如下操作，点击<strong>重新获取</strong>按钮即可。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-48"><a id="49minio_451" rel="noopener noreferrer" target="_blank"></a>49.minio存储怎么使用。</h3>
+<p>v1.21.0版本新增了minio存储。minio存储首先要在自己本地服务器搭建好，参考网上博客教程。windows本地搭建可以参考：<a href="https://blog.csdn.net/qq_43535972/article/details/146606714" rel="noopener noreferrer" target="_blank">https://blog.csdn.net/qq_43535972/article/details/146606714</a></p>
+<p>如果搭建在服务器上的话记得用自己的域名代理minio服务器端口，记得配个SSL证书，用https开头。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+注意要手动设置存储桶为公开访问（不推荐）或者自定义访问策略（推荐）：登录 MinIO Console，在控制台中创建bucket，名称为：linfeng。<br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div></p>
+<ul><li><p>点击左侧的 "Buckets"。</p></li><li><p>创建"linfeng" 存储桶并点击进入 。</p></li><li><p>点击 "Access Policy"。如上图。</p></li><li><p>选择public公开访问（不推荐公开）。或者选择custom自定义策略（推荐），并添加以下策略内容：</p></li></ul>
+<pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "*"
+                ]
+            },
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::linfeng/*"
+            ]
+        }
+    ]
+}
+</code></pre>
+<h3 id="sec-4-49"><a id="50HBuilderX_456_uniapp_486" rel="noopener noreferrer" target="_blank"></a>50.升级到HBuilderX 4.56+ 后启动uniapp项目失败。</h3>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+答：V1.21.0以及之前的用户，把HBuilderX升级4.56+后的版本，启动项目会报如图的错。（注意：2025.04.30之后的V1.21.0采购客户可以忽略，代码已完成适配）<br/>
+解决方法一：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+这种方法最简单，重新启动下项目就可以了。如果不行的话，用方法二。<br/>
+解决方法二（推荐）：<br/>
+在<code>manifest.json</code>根节点配置: "sassImplementationName": "node-sass"; 可选值 "dart-sass" | "node-sass"。如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+注意这个回退选项的生效范围是：vue2项目且HBuilderX不是arm版。如果开发者的mac电脑是arm cpu且仍想要为vue2项目使用node-sass，需要改用HBuilderX的mac intel cpu版。iintel 版也可以以兼容模式在mac的arm cpu上运行。<br/>
+uniapp官方解释：<a href="https://uniapp.dcloud.net.cn/tutorial/syntax-css.html#css-preprocessor" rel="noopener noreferrer" target="_blank">https://uniapp.dcloud.net.cn/tutorial/syntax-css.html#css-preprocessor</a></p>
+<h3 id="sec-4-50"><a id="51H5_497" rel="noopener noreferrer" target="_blank"></a>51.如何关闭H5端在电脑浏览器下自适应宽高。</h3>
+<p>答：搜索“/static/pc/pc.html”，注释红框内的代码即可。注意：如果部署时更换了H5端的路由，直接用浏览器访问H5端（没在手机模式下），会导致访问异常，因为项目重定向到了/static/pc/pc.html，只要把它注释了即可。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-4-51"><a id="52v1250v300jdk8jdk17_500" rel="noopener noreferrer" target="_blank"></a>52.v1.25.0及之前的老版本升级到v3.0.0，服务器的jdk8环境如何切换到jdk17。</h3>
+<p>答：首先关闭jar包服务，确保服务器上其他jar包不依赖于jdk8环境。<br/>
+然后执行卸载openidk8的命令,这里服务器以centos系统为例，命令行如下所示：</p>
+<pre><code>yum -y remove java-1.8.0-openjdk
+</code></pre>
+<p>然后安装openjdk17，命令行如下所示：</p>
+<pre><code>yum -y install java-17-openjdk
+</code></pre>
+<p>安装后执行：java --version 即可验证安装是否成功，如下图所示，即代表成功：<br/><div class="img-placeholder">文档截图已省略</div></p></section><section class="doc-section" id="section-"><h1>线上部署</h1><h2 id="sec-5-0"><a id="_0" rel="noopener noreferrer" target="_blank"></a>线上部署：</h2>
+<h3 id="sec-5-1"><a id="_2" rel="noopener noreferrer" target="_blank"></a>一、打包：</h3>
+<hr/>
+<p>林风社交论坛项目linfeng-community部署：</p>
+<h4 id="sec-5-2"><a id="1_5" rel="noopener noreferrer" target="_blank"></a>1.后端打包</h4>
+<p>下面介绍基于IDEA工具对后端backend项目打包的方式。首先确保application-prod.yml中正确配置了数据库账号密码等信息。打开IDEA侧边栏，如下图，对maven先clean再install，找到target下的jar包上传到服务器。<br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div></p>
+<p>在target目录下，生成了如上图的可执行jar包，就代表后端打包完成。</p>
+<hr/>
+<h4 id="sec-5-3"><a id="2uniapp_H5_13" rel="noopener noreferrer" target="_blank"></a>2.uniapp H5打包</h4>
+<p>打包前记得utils/config.js下配置你的线上域名<br/><div class="img-placeholder">文档截图已省略</div><br/>
+接下来，进行H5端打包操作。如下图，选择<strong>发行</strong><br/><div class="img-placeholder">文档截图已省略</div><br/>
+然后,输入你h5端的访问域名，不要带https前缀，直接输入域名，</p>
+<p>比如：<a href="http://h5.xxx.com/" rel="noopener noreferrer" target="_blank">h5.xxx.com</a>  。如下图，<br/><div class="img-placeholder">文档截图已省略</div><br/>
+输入后选择<strong>发行</strong>按钮。随后等待控制台的提示，如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+h5文件夹就是打包后的H5端代码<br/><strong>注意点1</strong>：目前最新版的HBuilderX 4.15版本打包出来的H5端代码包变成了名称为web的文件夹，名称发生了变化。<br/><strong>注意点2</strong>：如果你只要普通的H5版本，不需要微信公众号版本，那么你需要查看一下<code>常见问题</code>章节的第41条。</p>
+<hr/>
+<h4 id="sec-5-4"><a id="3uniapp__29" rel="noopener noreferrer" target="_blank"></a>3.uniapp 微信小程序打包</h4>
+<p>首先，同样需要注意的是，打包前记得utils/config.js下配置你的线上域名。<br/>
+然后，如下图选择发行。<br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/>
+HBuilderX会自动唤起微信开发者工具，然后在微信开发者工具中选择“上传”按钮即可。然后去微信公众平台上传版本审核，审核前需要注意一下一些要素，详情查看本章最下面的“微信小程序审核注意事项”。</p>
+<hr/>
+<h4 id="sec-5-5"><a id="4uniapp__app_36" rel="noopener noreferrer" target="_blank"></a>4.uniapp  app打包</h4>
+<p>具体参考uniapp官方文档：<a href="https://uniapp.dcloud.net.cn/tutorial/run/run-app.html" rel="noopener noreferrer" target="_blank">https://uniapp.dcloud.net.cn/tutorial/run/run-app.html</a><br/>
+打包前需要生成对应的证书，运行效果预览可以运行到模拟器上，比如mumu模拟器，雷电模拟器等。uniapp项目mainfest.json下APP基本配置：APP图标配置\APP模块配置里面的map地图和payment支付也需要进行配置。配置都完成后选择“发行”、“原生APP云打包”，然后如下图操作即可打包：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h4 id="sec-5-6"><a id="5_41" rel="noopener noreferrer" target="_blank"></a>5.后台管理系统打包</h4>
+<p>在config/index.js中配置你的后端接口地址即可<br/>
+执行<code>npm run build</code>即可打包出dist文件夹。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-5-7"><a id="_48" rel="noopener noreferrer" target="_blank"></a>二、部署</h3>
+<h4 id="sec-5-8"><a id="1_50" rel="noopener noreferrer" target="_blank"></a>1.准备子域名</h4>
+<p>我们这里以不同子域名的方式部署项目，按你自己的需要来选择：</p>
+<p>后端api服务：<strong><a href="http://api.xxx.com/" rel="noopener noreferrer" target="_blank">api.xxx.com</a></strong>  （这个必须有）<br/>
+h5端：<strong><a href="http://h5.xxx.com/" rel="noopener noreferrer" target="_blank">h5.xxx.com</a></strong>    （如果你不需要h5用户端或者微信公众号端的话就不用）<br/>
+后台管理系统:  <strong><a href="http://admin.xxx.com/" rel="noopener noreferrer" target="_blank">admin.xxx.com</a></strong>      (这个必须有)</p>
+<pre><code>提示：如上的子域名前缀你可以自定义，我这里只是为了演示举例，请用你自己域名。
+</code></pre>
+<p><strong>DNS解析子域名</strong>：</p>
+<p>把域名和IP做对应解析（凡是你用到的子域名都要做DNS域名解析，在你购买域名的对应的阿里云或腾讯云或其他云服务商的后台管理端找到DNS解析模块去处理）。示例如下图（这里以配置<code>h5.xxx.com</code>的DNS解析为例子）：<br/><div class="img-placeholder">文档截图已省略</div><br/><strong>SSL证书申请</strong>：<br/>
+SSL证书申请有两种方式，如果你用宝塔部署项目，那就用方法一，如果不是的话就参考方法二。<br/>
+方法一：如果宝塔安装了，宝塔上直接可以一键申请并部署SSL证书（后面会具体介绍）<br/>
+方法二：<br/>
+去云服务厂商（阿里云、腾讯云等）用你们公司（注意：如果你上线微信小程序必须用你公司的域名）已备案的域名申请SSL证书。需要申请的数目按如上要求。申请免费的SSL证书即可。目前免费证书有效期都是3个月。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+这里以阿里云SSL证书为例：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+申请通过后选择下载，如下图所示：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+下载后解压文件夹，这两个类型的文件用于宝塔SSL部署（SSL具体部署请继续往后看）。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-5-9"><a id="2_76" rel="noopener noreferrer" target="_blank"></a>2.安装宝塔</h4>
+<p>用宝塔部署要方便很多（强烈推荐宝塔，方便你快速部署）。这里以宝塔部署为例进行具体说明，您可按照自己习惯的方式部署项目，基本思路都是基本一致的。<br/>
+首先，服务器基本配置，最低要求2核4G 5M带宽。最好使用4核8G  5M带宽及以上的配置。具体按照自己的用户量评估，另外推荐使用centos9 的服务器（centos7.6或7.9也行），ubantu系统的也行，没有强制的要求哦。文档中我们以centos9为例。<br/>
+按照宝塔安装手册要求（<a href="https://www.bt.cn/bbs/thread-19376-1-1.html%EF%BC%89" rel="noopener noreferrer" target="_blank">https://www.bt.cn/bbs/thread-19376-1-1.html）</a> 安装好宝塔面板以后，然后需要在宝塔上一键安装如下软件：<code>Nginx</code>，<code>Redis</code>，<code>MySQL5.7</code>。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+这三个软件的安装<strong>版本</strong>参考如下图：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p>接下来，记得把数据库文件导入数据库。如下图：<br/>
+部署到Linux上的话，MySQL5.7需要配置大小写。具体查看<code>常见问题</code>章节第3条。不然第一次在服务器上启动后端项目会出现qrtz定时任务报错的哦！！！！<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<p>接下来，安装java运行环境，由于V3.0.0版本开始升级为jdk17了，故V3.0.0版本以及之后新版本的用户请安装openjdk17，复制如下的语句，打开黑窗口执行yum命令安装。不然jar包跑不起来。这里我们以centos9系统为例安装openjdk8，如果你用其他系统，安装命令需要自己网上找下。如果你服务器已经安装了openjdk8了，那请参考<code>常见问题</code>章节<strong>第52条</strong>卸载老的openjdk。</p>
+<pre><code>安装JDK 17（centos系统下） ：  yum -y install java-17-openjdk
+</code></pre>
+<p>v1.25.0以及之前老版本的用户，请安装openjdk1.8，如下：</p>
+<pre><code>安装JDK 1.8（centos系统下） ：  yum -y install java-1.8.0-openjdk
+</code></pre>
+<p>如何确定java运行环境安装成功，在终端输入 java 回车后若如下图所示，即为安装成功。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p>然后创建站点：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图所示，点击<code>添加站点</code>。注意：宝塔这里默认的分区是<code>PHP项目</code>，虽然我们的是Java项目，这里为了操作部署便捷，我们直接在默认的<code>PHP项目</code>栏目下进行添加站点操作。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+接下来，<code>添加站点</code>操作如上图所示。重复步骤，分别创建<code>api.xxx.com</code>站点，<code>admin.xxx.com</code>站点，<code>h5.xxx.com</code>站点（需要h5端的话需要创建）。</p>
+<hr/>
+<p>接着，进行<strong>SSL部署</strong>：</p>
+<p>方法一：如下图，宝塔直接申请部署<br/><div class="img-placeholder">文档截图已省略</div><br/>
+注意：你这里申请的前提是DNS已经解析了对应的子域名，不然申请会失败的哦。<br/>
+方法二：<br/>
+按照上面文档介绍的方法二，打开下载的SSL证书（选择nginx版本下载）：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+复制证书文件内容，并按下图所示填写：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<p>接下来，将打包好的后端jar文件，用户端web文件夹，管理端dist文件夹，分别上传到宝塔对应站点，具体如下。</p>
+<hr/>
+<p><strong>对于后端api服务</strong>，上传的是打包好的jar包，如下图所示：<div class="img-placeholder">文档截图已省略</div><br/>
+jar文件上传到该目录下后，然后打开如上图的终端按钮，</p>
+<p>后端启动方式有两种，分别是：<br/>
+方式一：<br/>
+先上传项目文件夹中的shell文件夹下的start.sh和stop.sh文件至同级目录，如上图所示。<br/>
+然后在终端执行"./start.sh"可以启动后端服务。<br/>
+示例如下，表示用shell脚本启动后端java接口服务：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如果要关闭后端服务，那么执行"./stop.sh"可以关闭后端服务。<br/>
+注意注意：如果你改了jar包的名称，那要修改这两个shell脚本的具体内容才能执行成功。默认不用修改。<br/>
+方式二：<br/>
+执行jar包启动命令。<br/><code>nohup java -jar linfeng-community-backend.jar --spring.profiles.active=prod &gt; app.log 2&gt;&amp;1 &amp;</code><br/>
+要中断服务的话首先执行：<code>ps -ef|grep java</code>查看进程，然后执行kill命令关闭进程。</p>
+<hr/>
+<p><strong>对于H5端</strong>，上传的是web文件夹（放到h5.xxx.com目录下）。<br/>
+如下图是H5端的放置路径：</p>
+<p><div class="img-placeholder">文档截图已省略</div></p>
+<p><strong>对于后台前端</strong>，上传的是dist文件夹（放到admin.xxx.com目录下）。<br/>
+如下图是后台前端（管理端）的放置路径：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<p>接下来就是配置nginx代理，<br/>
+对于后端api服务域名<code>api.xxx.com</code>，需要配置nginx，直接看如下第（3）步nginx配置。<br/>
+对于<code>admin.xxx.com</code>和<code>h5.xxx.com</code>，不用手动修改nginx配置文件，你只需要按如下图指定目录即可（宝塔会自动修改nginx文件配置）。<br/>
+H5端设置如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+管理端前端设置如下图：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-5-10"><a id="3nginx_152" rel="noopener noreferrer" target="_blank"></a>3.nginx配置</h4>
+<p>关于后端api服务域名<code>api.xxx.com</code>的nignx配置在如下图所示的地方进行。</p>
+<p><div class="img-placeholder">文档截图已省略</div><br/><strong>完整版nginx配置请参考如下</strong></p>
+<p>（<strong>注意</strong>：如果你用的是宝塔部署，并且配置好了SSL证书，可以直接复制如下的nginx文件，然后全局搜索<code>api.linfeng.tech</code>替换成你的域名即可(ctrl+F快捷键可全局搜索)。请注意一定先配置保存好SSL证书，再复制粘贴替换保存如下的nginx代码，否则无法保存成功哦），当然，你也可以参考如下nginx配置，按照自己项目部署具体情况进行修改：</p>
+<pre><code>map $http_upgrade $connection_upgrade {
+default upgrade;
+'' close;
+}
+upstream websocket {
+server 127.0.0.1:8080; #要改成后端的端口
+}
+server
+{
+    listen 80;
+	  listen 443 ssl http2;
+    server_name api.linfeng.tech;
+    # index index.php index.html index.htm default.php default.htm default.html;
+    root /www/wwwroot/api.linfeng.tech;
+    
+    #CERT-APPLY-CHECK--START
+    # 用于SSL证书申请时的文件验证相关配置 -- 请勿删除
+    include /www/server/panel/vhost/nginx/well-known/api.linfeng.tech.conf;
+    #CERT-APPLY-CHECK--END
+    #SSL-START SSL相关配置，请勿删除或修改下一行带注释的404规则
+    #error_page 404/404.html;
+    #HTTP_TO_HTTPS_START
+    if ($server_port !~ 443){
+        rewrite ^(/.*)$ https://$host$1 permanent;
+    }
+    #HTTP_TO_HTTPS_END
+    ssl_certificate    /www/server/panel/vhost/cert/api.linfeng.tech/fullchain.pem;
+    ssl_certificate_key    /www/server/panel/vhost/cert/api.linfeng.tech/privkey.pem;
+    ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
+    ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    add_header Strict-Transport-Security "max-age=31536000";
+    error_page 497  https://$host$request_uri;
+
+    #SSL-END
+    
+    
+    #一键申请SSL证书验证目录相关设置
+    location ^~ /.well-known {
+        allow all;
+        root /www/wwwroot/api.linfeng.tech;
+        try_files $uri =404;
+    }
+    
+ 
+  location / {
+		proxy_pass http://127.0.0.1:8080;
+		proxy_set_header X-Forwarded-Proto $scheme;
+        	proxy_set_header X-Forwarded-Port $server_port;
+        	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        	proxy_set_header Upgrade $http_upgrade;
+        	proxy_set_header Connection "upgrade";
+	}
+  location /socket {
+    proxy_pass http://websocket/app/socket;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+  }
+
+
+    access_log  /www/wwwlogs/api.linfeng.tech.log;
+    error_log  /www/wwwlogs/api.linfeng.tech.error.log;
+}
+</code></pre>
+<hr/>
+<p>配置完成后，再次提醒，请记得DNS解析，把域名和IP做对应解析（凡是你用到的子域名都要做DNS域名解析，在你购买域名的对应的阿里云或腾讯云或其他云服务商的后台管理端找到DNS解析模块去处理）。示例如下图（这里以配置<code>h5.xxx.com</code>的DNS解析为例子）：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p>DNS配置完了，稍等一会就生效。<br/>
+后台管理系统访问<code>https://admin.xxx.com</code>    出现后台管理系统即代表成功。</p>
+<p>H5用户端访问<code>https://h5.xxx.com</code>  出先用户端即代表成功。<br/>
+后端接口服务访问<code>https://api.xxx.com</code><br/>
+后端接口服务配置好以后，如果访问：<a href="https://api.xxx.com/" rel="noopener noreferrer" target="_blank">https://api.xxx.com</a>  出现如图所示即表示后端接口服务配置成功。<br/>
+v3.0.0版本起如下：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+v1.25.0及之前如下：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p><strong>如果无法访问，可能的原因有</strong>：</p>
+<ol><li>后端jar包服务未正常启动，可以打开jar包同级目录下的日志文件查看具体日志；</li><li>Nginx没有正确配置。可以参考文档提供的nginx配置；</li><li>DNS解析未开启或未正确配置；</li><li>不生效也可以尝试清理浏览器缓存，或者换个浏览器访问试试，可能是浏览器缓存导致；</li><li>DNS解析生效时间没到，稍等一会再尝试。</li></ol>
+<p>以上可能原因请逐一排查。</p>
+<p>部署后，还要注意一下分享海报功能的字体文件部署，海报的字体文件需要上传到服务器上jar包的同级目录，具体请看：<strong>常见问题 第24条</strong></p>
+<hr/>
+<h3 id="sec-5-11"><a id="_256" rel="noopener noreferrer" target="_blank"></a>三、微信小程序审核注意事项</h3>
+<p>小程序类目选择“社区/论坛”,并根据要求上传公司或个体户备案域名截图，注意一定要公司或个体户的备案域名。这个公司或个体户必须是注册你的微信公众平台账号的主体。</p>
+<p>为了能顺利过审，小程序代码提交审核前，请关闭如下的按钮：<br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/><div class="img-placeholder">文档截图已省略</div><br/>
+另外，如下图所示，V1.15.0版本新增了好友聊天模块的总开关，支持后台开启或关闭该模块。该按钮关闭后，消息页面，不再展示好友栏和私聊入口，用户主页也不再展示加好友的入口。审核的话也可以关闭了。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+另外，内容部分不能是测试数据，否则会被驳回的（不要出现“测试”字眼），要保证内容饱满点。<br/>
+还需要注意，<strong>百度智能云内容审核请开启</strong>，否则会被驳回的。</p>
+<pre><code>如果您对上架还有疑惑的地方，可以直接咨询我们技术客服哦~
+</code></pre>
+<h3 id="sec-5-12"><a id="_276" rel="noopener noreferrer" target="_blank"></a>四、其他注意事项必看！</h3>
+<p>(1)<strong>当你的项目部署上线运营前，千万记得</strong>，把前端项目里的静态图片资源全部替换成自己的，因为官方演示站点的静态资源随时会切换导致你的静态资源无法访问。</p>
+<p><strong>替换的时候全局搜索demo.linfeng.tech，改成你的地址即可。</strong><br/>
+如何改成你的地址：比如放在服务器本地，那就在宝塔上创建一个新的站点，例如叫做<code>img.xxx.com</code>,然后配置好你的ssl证书和DNS解析，再把我们提供的压缩包里的静态资源resource文件夹，以及表情包的big文件夹，放在同级目录下（www/wwwroot/img.xxx.com），放过来之后可以访问到具体图片资源即可，如下图所示。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如下图所示，请记得在uniapp项目的utils/config.js中配置你的<code>imgResource地址</code>和<code>emojiUrl地址</code>，应用上线前必须改成自己的，千万别用官方的！！！<br/><div class="img-placeholder">文档截图已省略</div><br/>
+替换的时候全局搜索demo.linfeng.tech，改成你的地址即可。<br/>
+(2)如果上线微信小程序，还要记得去微信公众平台申请开通地图选择位置wx.chooseLocation（具体位置在侧边栏"开发"——&gt;"开发管理"——&gt;"接口设置"）</p>
+<p>如下图所示。</p>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+(3)uniapp端全局搜索“林风”，就可以找到需要手动替换的内容。</p>
+<p>(4)如果使用微信小程序端，微信公众平台上需要设置服务器域名（具体位置在侧边栏"开发"——&gt;"开发管理"——&gt;"开发设置"）。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，你的后端域名 <a href="http://api.xxx.com/" rel="noopener noreferrer" target="_blank">api.xxx.com</a>,在这5个打码的地方都填上。<br/>
+另外，uploadFile和download域名还要填写你的云存储域名，不然上传图片功能没法用的哦。比如：<a href="http://img.xxx.com/" rel="noopener noreferrer" target="_blank">img.xxx.com</a> 。必须设置！！！<br/>
+(5)更新设置小程序的隐私协议，具体请查看<code>常见问题</code>章节的第39条。必须设置！！！</p>
+<p>(6)根据微信规定，微信小程序要备案，所以还要记得去备案微信小程序。必须备案！！！</p>
+<p>(7)所有采购用户均需登记采购信息（交付时已登记）。上线后记得按标准版压缩包的注意事项文档中的要求，向我们<strong>报备登记项目上线地址</strong>，我们将严格保密你的上线地址。</p>
+<pre><code>本软件已经申请软著保护（2025SR0586781、 2025SR0731472）。我司已经与北京的律师事务所达成长期合作伙伴关系，专门打击盗版行为。
+欢迎举报，举报者我们索赔成功后按比例奖赏。
+</code></pre></section><section class="doc-section" id="section-"><h1>二开指导</h1><p><strong>林风社交论坛项目官网</strong>：<a href="https://www.linfengtech.cn/" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn</a><br/>
+备用官网：<a href="https://net.linfeng.tech/" rel="noopener noreferrer" target="_blank">https://net.linfeng.tech</a></p>
+<p>更多演示可关注“林风科技”公众号。<br/>
+林风社交论坛项目标准商业版<code>二次开发</code>基础指导：</p>
+<h2 id="sec-6-0"><a id="1_6" rel="noopener noreferrer" target="_blank"></a>1.用户端后端创建新接口</h2>
+<p>在该包下新建接口开发你的<strong>用户端</strong>二开内容</p>
+<pre><code>io.linfeng.modules.app
+</code></pre>
+<h3 id="sec-6-1"><a id="1_12" rel="noopener noreferrer" target="_blank"></a>（1）接口登录拦截</h3>
+<p>如果该接口需要当前用户信息，则在接口入参上添加@LoginUser注解注入用户信息，并添加@Login注解。如下所示：</p>
+<pre><code>/**
+ * 评论区评论点赞
+ */
+@Login
+@PostMapping("/addThumbs")
+@NoRepeatSubmit
+public R thumbs(@RequestBody AddThumbsParam request,@LoginUser AppUserEntity user){
+
+    commentThumbsService.addThumbs(request,user);
+    return R.ok();
+}
+</code></pre>
+<p>注意：使用@LoginUser注解就必须使用@Login注解！！！不然会报空指针异常。<br/>
+反过来，使用@Login注解则不一定需要@LoginUser注解，除非你需要获取用户信息。<br/>
+如上代码中，我们发现还有一个@NoRepeatSubmit注解，该注解是防止接口的重复提交操作，保持接口幂等性的。</p>
+<h3 id="sec-6-2"><a id="2_30" rel="noopener noreferrer" target="_blank"></a>（2）获取用户信息</h3>
+<p>如果确定你的新接口需要用户登录，那么你只需要按照第（1）条的说明进行操作，但是按照第（1）条的说明进行操作的话，会出现一个问题，即：如果用户端未登录，那么用户端会强制跳转到登录页。如果你不希望这样，那么就按照如下操作进行：<br/>
+首先，controller接口处不再添加第（1）条的两个注解，你只需要注入LocalUser这个Bean，调用getUser()方法并判断该方法返回的当前用户信息是否为空即可。直接看代码：</p>
+<pre><code>@Override
+public AppPageUtils lastPost(Integer currPage) {
+    Page&lt;PostEntity&gt; page = new Page&lt;&gt;(currPage,10);
+    QueryWrapper&lt;PostEntity&gt; queryWrapper=new QueryWrapper&lt;&gt;();
+    queryWrapper.lambda().eq(PostEntity::getStatus,Constant.POST_NORMAL);
+    queryWrapper.orderByDesc("post_top","id");
+    AppUserEntity user = localUser.getUser();
+    if(ObjectUtil.isNull(user)){
+        return this.mapPostList(page, queryWrapper, 0);
+    }
+    return this.mapPostList(page, queryWrapper, user.getUid());
+}
+</code></pre>
+<p>提取关键代码即如下所示：</p>
+<pre><code>
+@Autowired
+private LocalUser localUser;
+...
+...
+...
+AppUserEntity user = localUser.getUser();
+if(ObjectUtil.isNull(user)){
+    //未登录时的业务逻辑
+}else{
+    //登录时的业务逻辑
+}
+</code></pre>
+<h3 id="sec-6-3"><a id="3_62" rel="noopener noreferrer" target="_blank"></a>（3）响应体</h3>
+<p>接口响应体支持两种形式：<code>new Result&lt;&gt;.ok()</code>和<code>R.ok()</code>，可根据实际需求选择使用。</p>
+<ul><li><p><strong><code>new Result&lt;&gt;.ok()</code></strong><br/>
+适用于需要明确响应体字段结构的场景。该方法要求预先定义好响应体的 VO（View Object）结构，便于 Swagger 生成清晰的接口文档，方便前端理解返回字段。</p></li><li><p><strong><code>R.ok().put("key", value)</code></strong><br/>
+适用于需要灵活返回数据的场景。使用该方法时，无需提前创建 VO 对象，可直接通过<code>.put()</code>方法动态添加返回字段。但由于其底层基于 HashMap 结构，Swagger 无法自动识别具体返回字段，因此不会在swagger接口文档中显示详细字段说明。</p></li></ul>
+<p>两种方式在本项目中均可使用，请根据实际场景和开发习惯进行选择。</p>
+<h2 id="sec-6-4"><a id="2_76" rel="noopener noreferrer" target="_blank"></a>2.创建新的定时任务</h2>
+<p>在该包下创建你的类</p>
+<pre><code>io.linfeng.modules.job.task
+</code></pre>
+<p>该类的类名需要和后台管理系统创建的“bean名称”一致。<br/>
+比如：下图和对应的代码保持了一致的名称。参数即为传入的值。cron依照自己的需求设定时间。依葫芦画瓢即可。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<pre><code>/**
+ *
+ * 定期清理所有消息定时任务
+ *
+ *
+ * @author linfeng
+ */
+@Component("messageTask")
+public class MessageTask implements ITask {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    @Lazy
+    private MessageService messageService;
+
+
+    @Override
+    public void run(String params){
+        logger.debug("messageTask定时任务正在执行，参数为：{}", params);
+        //必须是整数而且为正数，代表清除几个月前的数据
+        if(NumberUtil.isInteger(params)&amp;&amp;Integer.valueOf(params)&gt;0){
+            messageService.deleteMessageByMonth(Integer.valueOf(params));
+        }
+    }
+}
+</code></pre>
+<h2 id="sec-6-5"><a id="3_114" rel="noopener noreferrer" target="_blank"></a>3.前端开发参考文档</h2>
+<p>1.Uniapp官方文档：</p>
+<p><a href="https://uniapp.dcloud.net.cn/component/" rel="noopener noreferrer" target="_blank">https://uniapp.dcloud.net.cn/component/</a><br/>
+2.UView官方文档(1.X版本，不要看2.X文档): <a href="https://v1.uviewui.com/components/intro.html" rel="noopener noreferrer" target="_blank">https://v1.uviewui.com/components/intro.html</a><br/>
+V1.25.0开始升级为uniapp（vue3），请参考文档：<a href="https://vkuviewdoc.fsq.pub/components/intro.html" rel="noopener noreferrer" target="_blank">https://vkuviewdoc.fsq.pub/components/intro.html</a><br/>
+3.Element-Plus文档：<br/><a href="https://element-plus.org/zh-CN/" rel="noopener noreferrer" target="_blank">https://element-plus.org/zh-CN/</a><br/>
+Vue3文档：<br/><a href="https://cn.vuejs.org/" rel="noopener noreferrer" target="_blank">https://cn.vuejs.org/</a><br/>
+4.v1.24.0版本之前的目录结构：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+v1.25.0版本及之后的目录结构：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如果你要二次开发微信小程序，<strong>新增的页面请放在分包subpages下</strong>。不然微信小程序打包有可能超出最大限制。</p>
+<h2 id="sec-6-6"><a id="4_129" rel="noopener noreferrer" target="_blank"></a>4.后台管理端</h2>
+<h4 id="sec-6-7"><a id="1_130" rel="noopener noreferrer" target="_blank"></a>1.如何获取当前登录管理员</h4>
+<p>继承抽象类AbstractController，调用<code>getUser()</code>即可。</p>
+<p>如果只要管理员用户id，调用<code>getUserId()</code>即可。</p>
+<pre><code>package io.linfeng.modules.sys.controller
+
+public abstract class AbstractController {
+        .......
+}
+</code></pre>
+<h4 id="sec-6-8"><a id="2_142" rel="noopener noreferrer" target="_blank"></a>2.如何记录后台管理端的敏感操作日志</h4>
+<p>在后台管理端接口controller上添加注解@SysLog（"描述内容"）</p>
+<pre><code>@SysLog("需要描述内容的信息")
+</code></pre>
+<p>例如：</p>
+<pre><code>  @SysLog("修改圈子分类")
+  @PostMapping("/updateCategory")
+  @RequiresPermissions("admin:category:update")
+  @ApiOperation("修改圈子分类")
+  public R update(@RequestBody CategoryParam param){
+        categoryService.updateCategory(param);
+        return R.ok();
+  }
+</code></pre>
+<h4 id="sec-6-9"><a id="3_160" rel="noopener noreferrer" target="_blank"></a>3.如何创建后台管理系统后端接口</h4>
+<p>在该包下新建接口开发你的<strong>管理端</strong>二开内容</p>
+<pre><code>io.linfeng.modules.admin
+</code></pre>
+<p>如下为后台管理端接口示例：</p>
+<pre><code>  @GetMapping("/detail/{id}")
+  @RequiresPermissions("admin:recharge:info")
+  @ApiOperation("充值方案详情")
+  public R detail(@PathVariable("id") Integer id){
+         RechargeEntity recharge = rechargeService.getById(id);
+
+      return R.ok().put("recharge", recharge);
+  }
+</code></pre>
+<p>其中，权限注解<code>@RequiresPermissions("admin:recharge:info")</code>中的授权标识<code>admin:recharge:info</code>需要在后台管理系统菜单管理里面的授权标识配置对应上。</p>
+<h4 id="sec-6-10"><a id="4_178" rel="noopener noreferrer" target="_blank"></a>4.如何创建后台管理系统的页面</h4>
+<p>首先，请在后台管理系统的菜单管理中新增你的页面。如下图位置。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+然后，进入后台管理系统项目创建页面，一般的业务模块在admin模块下创建即可，路径如下：</p>
+<pre><code>linfeng-community-vue\src\views\modules\admin
+</code></pre>
+<p>最后，只要参考其他模块，编写代码即可。</p>
+<h2 id="sec-6-11"><a id="5_Swagger_187" rel="noopener noreferrer" target="_blank"></a>5. Swagger的文档使用</h2>
+<p>访问地址:</p>
+<p>本地：localhost:8080/doc.html<br/>
+线上:  域名+/doc.html<br/>
+后端项目的application-prod.yml里面设置线上接口文档是否开启。注意：如果没开启是无法访问到的。</p>
+<pre><code>注意：v3.0.0版本起更新了Swagger文档版本，比v1.25.0版本及之前的版本更好用。
+</code></pre>
+<p>（1）v3.0.0版本起，如果测试的是后台管理系统的接口，那么在如下图所示的地方设置token（移动端也是这个地方设置）。参数名称填：token，参数值为token的值，参数类型选header。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+v1.25.0版本以及之前的版本，如果测试的是后台管理系统的接口，那么在如下图所示的地方设置token（移动端也是这个地方设置），记得点击保存。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<p>（2）管理端的token值可以直接从已登录后台的请求路径获取，直接复制过来。如下图所示：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+（3）用户端的token值可以通过用户端登录或注册接口请求获取token，此外，也可以通过如下图方式复制token值。注意前提是已登录状态，否则找不到token值。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p>很多用户由于没有设置token值，会导致swagger文档接口请求失败，响应内容如下所示：响应码401就是未登录，也就是没有设置token或token无效。<br/><div class="img-placeholder">文档截图已省略</div></p></section><section class="doc-section" id="section-im"><h1>IM部署使用</h1><h2 id="sec-7-0"><a id="1_0" rel="noopener noreferrer" target="_blank"></a>1.前言</h2>
+<p>林风社交论坛标准商业版的私聊模块使用websocket开发，非使用第三方的IM插件，因此使用零费率！</p>
+<h3 id="sec-7-1"><a id="1_3" rel="noopener noreferrer" target="_blank"></a>（1）表情包的静态资源</h3>
+<p>在商业版的文件夹中有一个文件夹，如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+这个文件夹下有big和resource两个子文件夹，big文件夹是私聊表情包的静态资源文件夹，resource文件夹是uniapp移动端的前端静态资源文件夹。请把big文件夹上传到你的服务器可访问的地址，然后在下图箭头位置处配置一下，这个静态资源对服务器带宽消耗比较大，切勿使用我们官方演示地址（我们会随时修改资源地址，这会影响你们的线上项目展示效果）。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+由于这个静态资源较大，比较占用空间，所以如果将其放入前端项目本地打包的话，在微信小程序端打包上传的时候会超出规定的2048kb。</p>
+<hr/>
+<p>如果你<strong>不使用微信小程序，并且想把这个静态资源放到前端本地</strong>，那么修改如下两处的代码：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+把注释的代码打开，然后注释相应的代码。还有注意，把名称为‘big’的静态资源的文件夹放到前端uniapp工程static目录下，具体为‘static/emoji’目录。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h3 id="sec-7-2"><a id="2nginx_14" rel="noopener noreferrer" target="_blank"></a>（2）nginx的部署</h3>
+<p><strong>注意注意</strong>：完整的nginx部署已经在“<strong>线上部署</strong>”章节贴了完整的配置文件供大家复制参考！！！<br/>
+这里主要是解释websocket在nginx中增加的配置：<br/>
+具体如下图：<br/><div class="img-placeholder">文档截图已省略</div><br/>
+主要是多了<strong>如上图</strong>的红框内容<strong>以及如下图</strong>的红框配置内容。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+这个是基于宝塔的nginx配置方法，其他方式的类似。</p>
+<h3 id="sec-7-3"><a id="3IM_23" rel="noopener noreferrer" target="_blank"></a>（3）IM文件存储</h3>
+<p>由于私聊数据属于隐私内容，出于数据安全的考虑，我们将私聊相关的视频图片文件都存储本地，不存入云存储。所以你需要在配置本地的存储地址。<br/>
+具体查看<code>常见问题44条</code>。</p>
+<h3 id="sec-7-4"><a id="4websocket_26" rel="noopener noreferrer" target="_blank"></a>（4）websocket集群部署</h3>
+<p>如果你要做集群部署，那么V3.0.0版本之前的用户，websocket这块会有会话不同步的问题，需要增加相关配置代码，请联系技术客服获取相关配置代码！默认代码配置中只做了单个后端服务适配。</p></section><section class="doc-section" id="section-"><h1>使用手册</h1><h2 id="sec-8-0"><a id="_1" rel="noopener noreferrer" target="_blank"></a>一、演示效果</h2>
+<p>1.林风社交论坛标准版移动端演示<br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<p>2.后台管理端:</p>
+<p><a href="https://dev.linfeng.tech/" rel="noopener noreferrer" target="_blank">https://dev.linfeng.tech</a><br/>
+3. 用户PC端<br/>
+演示地址（电脑打开）：<a href="https://pc.linfeng.tech/" rel="noopener noreferrer" target="_blank">https://pc.linfeng.tech</a></p>
+<p>通过查看演示效果可以清楚基本的配置使用。<br/>
+进一步了解项目配置请参考如下<code>二、使用说明</code>的内容。</p>
+<pre><code>提醒：
+
+1.支付功能演示站点开通了微信小程序支付和微信公众号支付。APP支付、普通H5支付演示站点未开通。
+
+（只是演示站点未开通，该支付功能是对接好的），测试支付功能请以微信小程序端为准或者以微信公众号H5为准哦。
+
+2.演示站点APP、H5的手机验证码登录会直接返回，方便用户使用多账号测试。
+
+实际生产环境的是使用阿里云短信验证码或者腾讯云短信。
+</code></pre>
+<hr/>
+<p>3.林风社交论坛官网<br/><strong>林风社交论坛官网</strong>：<a href="https://www.linfengtech.cn/" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn</a><br/>
+备用官网：<a href="https://net.linfeng.tech/" rel="noopener noreferrer" target="_blank">https://net.linfeng.tech</a><br/><div class="img-placeholder">文档截图已省略</div></p>
+<hr/>
+<h2 id="sec-8-1"><a id="_34" rel="noopener noreferrer" target="_blank"></a>二、使用说明</h2>
+<h3 id="sec-8-2"><a id="_35" rel="noopener noreferrer" target="_blank"></a>基本配置</h3>
+<p>部分常规的功能，可直接通过演示站点了解。下面对一些常见的功能进行说明。</p>
+<h4 id="sec-8-3"><a id="1_37" rel="noopener noreferrer" target="_blank"></a>（1）文件存储配置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+文件存储支持：七牛云、阿里云、本地存储、minio存储。<br/>
+关于七牛云、阿里云配置参数使用请参考<code>常见问题</code>章节<code>第37、38条</code><br/>
+本地存储的使用请参考<code>常见问题</code>章节<code>第44条</code><br/>
+minio存储的使用请参考<code>常见问题</code>章节<code>第49条</code><br/>
+注意：私聊模块的聊天文件视频图片是强制存储在服务器本地的，因为私聊内容属于用户私密内容。</p>
+<h4 id="sec-8-4"><a id="2_44" rel="noopener noreferrer" target="_blank"></a>（2）我的账户开关</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+我的账户页面对应关系如上图所示。</p>
+<h4 id="sec-8-5"><a id="3_47" rel="noopener noreferrer" target="_blank"></a>（3）积分和余额的互相兑换</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+积分和余额之间的兑换比例如上图所示。箭头所指的为用户端和管理端对应的配置位置。</p>
+<h4 id="sec-8-6"><a id="4__50" rel="noopener noreferrer" target="_blank"></a>（4）我的客服 页面配置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+客服页面配置对应关系如上图所示。</p>
+<h4 id="sec-8-7"><a id="5_53" rel="noopener noreferrer" target="_blank"></a>（5）邮箱登录</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+后台支持开启或关闭邮箱登录并注册功能。</p>
+<h4 id="sec-8-8"><a id="6_56" rel="noopener noreferrer" target="_blank"></a>（6）注册协议</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+注册协议对应关系如上图所示。</p>
+<h4 id="sec-8-9"><a id="7_59" rel="noopener noreferrer" target="_blank"></a>（7）会员入口开关</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+会员入口开关关闭后对上述两个用户端位置生效，并且无法进入会员详情页。即使强制进入会员详情页，也会提示模块未开启然后强制跳出页面。</p>
+<h4 id="sec-8-10"><a id="8_62" rel="noopener noreferrer" target="_blank"></a>（8）会员基本设置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如上图所示，会员的基本功能设置在这块。</p>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如上图所示，这是会员的充值参数设置模块。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图所示，会员的权益内容说明的设置自V1.12.0版本开始修改为后台可配置的形式，请注意：具体权益内容的说明应当按照你在后台管理系统种的实际配置进行对应修改。</p>
+<h4 id="sec-8-11"><a id="9_71" rel="noopener noreferrer" target="_blank"></a>（9）首页样式设置</h4>
+<p>首页样式设置如下图所示：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<p><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-8-12"><a id="10_78" rel="noopener noreferrer" target="_blank"></a>（10）帖子详情页样式设置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+帖子详情页的轮播和格子布局样式区别如上图所示。</p>
+<h4 id="sec-8-13"><a id="11_81" rel="noopener noreferrer" target="_blank"></a>（11）短信验证码</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+短信关闭的效果左图所示。短信开启的效果如右图所示。</p>
+<h4 id="sec-8-14"><a id="12_85" rel="noopener noreferrer" target="_blank"></a>（12）抽奖奖品设置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+奖品设置请保持在8个（一定要8个）。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+奖品的其他设置在如上图所示的位置。</p>
+<h4 id="sec-8-15"><a id="13_90" rel="noopener noreferrer" target="_blank"></a>（13）积分签到设置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+积分签到的基本参数设置在如上图位置。</p>
+<h4 id="sec-8-16"><a id="14_93" rel="noopener noreferrer" target="_blank"></a>（14）用户端个人中心菜单设置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+用户端个人中心菜单设置的地方如上图所示（这些icon图标实际上线的时候请改成自己的地址）。</p>
+<h4 id="sec-8-17"><a id="15_96" rel="noopener noreferrer" target="_blank"></a>（15）导航栏模块设置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+导航栏模块的对应关系如上图所示。</p>
+<h4 id="sec-8-18"><a id="16_99" rel="noopener noreferrer" target="_blank"></a>（16）轮播图设置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+两种类型的轮播图如图所示，都在后台的轮播图管理设置。</p>
+<h4 id="sec-8-19"><a id="17_102" rel="noopener noreferrer" target="_blank"></a>（17）敏感词检测设置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+自定义敏感词如上图所示。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+百度智能云内容审核配置如上图所示。</p>
+<h4 id="sec-8-20"><a id="18_107" rel="noopener noreferrer" target="_blank"></a>（18）视频入口开关设置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+视频入口关闭后即使强制进入了视频发布页面<code>/pages/post/add?type=2</code>，也会提示”视频模块未开启“，然后强制跳出。<br/>
+请注意：这个按钮只是针对发布视频的入口，如果存在已经发布的视频贴，还是可以正常搜索或浏览视频的。</p>
+<h4 id="sec-8-21"><a id="19_111" rel="noopener noreferrer" target="_blank"></a>（19）用户间的私聊</h4>
+<p>首先，在对方的用户主页选择加好友，待对方同意后，即可进行私聊。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+添加好友以及私聊入口的具体步骤如上图所示。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+好友之间私聊具体步骤如上图所示。</p>
+<h4 id="sec-8-22"><a id="20_117" rel="noopener noreferrer" target="_blank"></a>（20）机器人及后台发帖</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如上图所示，不需要的话可以关闭定时任务，发布的是文字贴，内容来自开放接口，会自动注册虚拟用户并发布帖子。<br/>
+当然，你也可以选择在后台用户管理处发其他类型的贴子，发贴需要先选择用户，如下图所示：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-8-23"><a id="21_123" rel="noopener noreferrer" target="_blank"></a>（21）圈子和圈主权限</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+圈主的权限如上图。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+圈子管理员的权限如上图。<br/>
+综上所述：<br/>
+i.圈主的权限：1.可删除本圈子内的任意帖子；2.可在圈内置顶本圈子内的任意帖子；3.举报 ；4.移除成员； 5.新建话题； 6.转让圈子；7.解散圈子；8.黑名单成员管理；9.设置进圈问答，进圈审核；<br/>
+ii.管理员权限：1.管理删除本圈子内的帖子；2.举报；3.新建话题；4.黑名单成员管理；5.进圈审核；<br/>
+iii.普通用户：1.可删除自己的帖子；2.举报</p>
+<h4 id="sec-8-24"><a id="22_132" rel="noopener noreferrer" target="_blank"></a>（22）进圈问答审核流程</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+进圈问答审核模块流程图如上图所示。注意，只有进入圈子才能在圈子内发帖。<br/>
+如果圈子内出现违规用户，圈主可以进入菜单栏的<code>成员管理</code>选择拉黑或者删除用户。</p>
+<h4 id="sec-8-25"><a id="23_137" rel="noopener noreferrer" target="_blank"></a>（23）用户主页信息私密设置</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+用户主页信息私密设置对应的生效位置关系如上图所示。</p>
+<h4 id="sec-8-26"><a id="24_140" rel="noopener noreferrer" target="_blank"></a>（24）长按功能的使用</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+长按操作属于隐藏功能，不容易发现，需要注意一下。本项目中有三处功能用到了长按：1.圈主长按置顶贴进行取消置顶；2.用户长按自己的评论进行删除；3.长按系统消息删除系统消息通知。</p>
+<h4 id="sec-8-27"><a id="25_144" rel="noopener noreferrer" target="_blank"></a>（25）移动端的用户管理</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，支持后台修改用户会员状态、支持后台修改用户积分以及钱包余额等信息。</p>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，支持后台处罚用户。删除或下架用户的所有帖子，以及重置用户的个人信息。</p>
+<h4 id="sec-8-28"><a id="26_151" rel="noopener noreferrer" target="_blank"></a>（26）积分打赏功能</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+积分打赏对应帖子详情页这两个位置的开关。</p>
+<h4 id="sec-8-29"><a id="27LV_154" rel="noopener noreferrer" target="_blank"></a>（27）用户等级模块LV</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+用户经验等级的评判标准就是用户的积分，积分值就是经验值。经验等级的升降级会随着积分的增加或扣减进行同步更新。每个LV等级的经验值范围设置在如上图的后台模块进行配置。</p>
+<h4 id="sec-8-30"><a id="28_157" rel="noopener noreferrer" target="_blank"></a>（28）后台圈子管理</h4>
+<p>圈子支持新增，新增时要设置用户ID，也就是圈主。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+圈子修改，也可以在后台转让圈主，设置用户ID即可。如下图：<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-8-31"><a id="29_162" rel="noopener noreferrer" target="_blank"></a>（29）小程序登录获取微信头像昵称</h4>
+<p>以下说明内容针对微信小程序端而言：登录、注册可选择获取微信头像昵称，如果用户名是”LF_“开头的话，说明是系统默认分配的用户名，这时在登录时会唤起微信头像昵称的授权弹窗，让用户自主选择头像昵称信息，当然用户可以直接点击取消弹框，那么默认会使用系统分配的头像和昵称。<br/>
+关于首次注册：初次手机号注册的用户会直接唤起头像昵称的授权弹框。<br/>
+注意：如果你做了二次开发，把java后端的默认用户名开头”LF_“改成了别的，那这uniapp端也要做修改哦，否则无法唤起微信头像昵称授权弹框。</p>
+<h4 id="sec-8-32"><a id="30_166" rel="noopener noreferrer" target="_blank"></a>（30）审核功能</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如上图所示，可以设置帖子、评论、新建圈子是否开启审核。<br/>
+开启后，在对应管理模块可以修改状态。</p>
+<h4 id="sec-8-33"><a id="31_171" rel="noopener noreferrer" target="_blank"></a>（31）话题功能</h4>
+<p>话题由圈子管理员或圈主创建，创建入口在圈子详情页的菜单栏中。用户在用户端发帖页面可以选择带上话题。后台管理端可以选择对话题管理：包括修改内容以及删帖等。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-8-34"><a id="32_174" rel="noopener noreferrer" target="_blank"></a>（32）聊天好友模块</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如果开启的话，好友模块会显示。如上图</p>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如果关闭的话，好友模块不显示。如上图</p>
+<h4 id="sec-8-35"><a id="33_180" rel="noopener noreferrer" target="_blank"></a>（33）付费贴</h4>
+<p>付费贴的配置在如下图位置。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+开启后，用户端发帖页面的效果如下图所示。支持图文贴和视频贴进行付费设置。<br/><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-8-36"><a id="34APP_185" rel="noopener noreferrer" target="_blank"></a>（34）APP版本更新</h4>
+<p><div class="img-placeholder">文档截图已省略</div><br/>
+如果是强制更新，那么app端打开首页后会自动弹框要求更新，不可拒绝。<br/>
+如果是非强制更新，那么app端打开首页后有弹框更新提示，可以选择不更新。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+发布新版本时，如上图所示，这两个地方要修改版本号。</p>
+<h4 id="sec-8-37"><a id="35_191" rel="noopener noreferrer" target="_blank"></a>（35）数据库备份</h4>
+<p>v1.23.0新增了数据库备份的定时任务，如果是windows上运行并且mysql在windows上，那么如下图这里地址改成你自己的mysql安装地址。数据库备份成功后就在项目统计目录下生成sql文件。</p>
+<p><div class="img-placeholder">文档截图已省略</div></p>
+<h4 id="sec-8-38"><a id="36_195" rel="noopener noreferrer" target="_blank"></a>（36）积分的作用</h4>
+<p><strong>积分获取途径</strong>：签到获得、被打赏、每日发帖奖励、抽奖中奖、余额兑换成积分、后台管理员添加。</p>
+<p><strong>积分扣减途径</strong>：抽奖次数消耗、积分兑换成余额、给别人作品打赏、被后台管理员扣减。<br/><strong>积分其他作用</strong>：用户经验等级LV的升降级（LV1到LV5）</p>
+<h2 id="sec-8-39"><a id="_200" rel="noopener noreferrer" target="_blank"></a>三、更新说明</h2>
+<p><strong>本小节的内容对linfeng-community林风社交论坛标准版每次更新的具体内容进行详细的说明。方便老客户升级版本，快速了解新增的功能点。</strong></p>
+<h3 id="sec-8-40"><a id="v310_203" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v3.1.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v31.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v31.html</a></p>
+<h3 id="sec-8-41"><a id="v300_205" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v3.0.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v30.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v30.html</a></p>
+<h3 id="sec-8-42"><a id="v1250_207" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.25.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v25.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v25.html</a></p>
+<h3 id="sec-8-43"><a id="v1240_209" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.24.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v24.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v24.html</a></p>
+<h3 id="sec-8-44"><a id="v1230_212" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.23.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v23.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v23.html</a></p>
+<h3 id="sec-8-45"><a id="v1220_215" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.22.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v22.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v22.html</a></p>
+<h3 id="sec-8-46"><a id="v1210_218" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.21.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v21.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v21.html</a><br/>
+林风社交论坛标准商业版V1.21.0 正式发布！这是产品上线以来的第31次迭代更新，本次版本以“多端协同·体验升级”为核心目标，全面适配全新发布的PC端网页项目（独立销售），同时带来12项功能新增与优化，助力社区运营更高效、用户体验更流畅！</p>
+<p>【四大新增功能，运营更省心】<br/>
+1️⃣ APP版本管理：轻松管理不同版本APP的发布与兼容性，告别版本混乱问题。<br/>
+2️⃣ MinIO文件存储：私有化对象存储，文件上传更快、管理更安全。<br/>
+3️⃣ 社区规范协议：内置合规化社区协议模板，一键配置，降低运营风险。<br/>
+4️⃣ 视频封面统一管理：集中管理视频封面素材，便捷度提升。</p>
+<p>【界面焕新，交互升级】<br/>
+✅ 圈子发布页/编辑页重构：全新UI设计，操作逻辑更清晰，建圈效率提升！<br/>
+✅ 后台侧边栏优化：管理导航更美观优雅，高频功能触手可及。<br/>
+✅ 数据统计增强：后台首页数据看板优化，运营状态一目了然。</p>
+<p>【细节优化，体验更贴心】<br/>
+💡 隐私协议、服务协议支持富文本编辑，自由排版更灵活！<br/>
+💡 消息已读状态精准显示。<br/>
+💡 投票后实时查看自己选择的选项，互动更透明。</p>
+<p>🚀 【为什么选择林风社交论坛标准商业版？】<br/>
+✔️ 持续迭代：3年多时间31次更新见证产品生命力，功能领先行业。<br/>
+✔️ 多端覆盖：APP+微信小程序+H5+微信公众号H5+PC端（新发布产品，独立销售）全端支持，满足用户多样化场景需求。<br/>
+✔️ 开箱即用：代码开源无加密，支持二次开发改造，私有化部署，运营数据更安全。从社区管理到安全合规，为企业提供一站式解决方案。<br/>
+林风团队：专注社交论坛生态，赋能数字未来。</p>
+<h3 id="sec-8-47"><a id="v1200_246" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.20.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v20.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v20.html</a></p>
+<h3 id="sec-8-48"><a id="v1190_248" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.19.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v190.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v190.html</a></p>
+<h3 id="sec-8-49"><a id="v1180_250" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.18.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v180.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v180.html</a><br/>
+林风社交论坛标准商业版发布V1.18.0，这是累计更新的第28个版本。本次更新综合参考众多客户的建议，将我们认为优先级高的功能点都进行了更新，本次更新体量属于大版本更新。主要内容有：草稿箱功能、单点登录、进圈审核提醒、多个模块UI焕新升级等。<br/>
+（1）草稿箱功能<br/>
+该功能与日常发布朋友圈功能类似，当退出发帖页面时，且存在未发布的编辑内容时，会自动唤起弹框提示用户是否保存草稿编辑。我们在图文贴、视频贴、长文贴三个模块都开发了响应功能，需要注意的是：对于图文贴而言，标题和内容可以存为草稿，图片由于只有发布后才触发上传，所以并不会被存入草稿，与之类似的还有长文贴的封面图。对于视频贴的视频文件和长文贴富文本中的图片，由于它们是实时上传的，不是临时路径，所以可以存入草稿。<br/>
+（2）单点登录<br/>
+林风社交论坛标准商业版发布V1.18.0新增了单点登录这个重磅功能，该功能主要用于整合第三方应用。很多客户的需求都是在自己的系统中接入我们的社交论坛系统，如何处理最便捷呢，这次更新我们给出了我们的方案，客户只需要在自己的应用中添加几行代码就能快速整合我们的系统，实现用户在我们系统中的自动登录，让用户免除重新登录的烦恼。该功能主要适用于H5版本。<br/>
+（3）进圈审核提醒<br/>
+对于开启进圈审核的圈主和圈子管理员，只要进入圈子详情页，如果有进圈审核申请，就会出现弹框提醒。该功能可以尽量减少申请用户的等待时长。该功能的建议由客户提出，是个非常必要的实用功能。<br/>
+（4）其他新增功能<br/>
+余额兑换积分的功能彻底打通了平台中积分和余额的相互兑换，当然你也可以选择关闭这个功能，后台配置中心可以一键设置。该功能作为后续该模块的新拓展有非常重要的作用。 抽奖模块新增了一种新类型：自定义物品，该功能也非常实用，用户可以自定义各种品类的抽奖物品。关于领奖环节，自定义物品需要在抽奖须知模块提醒用户联系平台客服领取。 对于已经被封禁或禁言的用户，可以在对应的用户主页直接看到禁用警示栏。<br/>
+（5）页面焕新升级<br/>
+本次更新升级的页面有：系统消息一个页面、举报模块三个页面、系统隐私设置一个页面、抽奖记录一个页面。本次焕新升级前端页面已经把所有我们认为需要改进的页面都更新了，这是一个比较大的工作量，为了打造更好的产品体验，这些都是应该的！</p>
+<h3 id="sec-8-50"><a id="v1170_264" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.17.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v170.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v170.html</a><br/>
+这次更新属于小体量更新，主要的更新内容有：新增本地文件存储功能； 新增发贴/涨粉排行榜；简化长文模块富文本编辑器等。</p>
+<p>本地存储：这个功能提的客户比较多。虽然新增了这项功能，但是我们依旧非常不推荐你使用本地存储。本地存储对服务器带宽占用很大，且后期迁移服务器比较麻烦。我们只推荐本地测试使用。</p>
+<p>新增发贴/涨粉排行榜：排行榜属于较为常见的功能，本次新增了发帖达人排行榜以及涨粉博主排行榜。发帖达人排行榜根据本周发布正常上线帖子的数量对用户进行排序。涨粉排行按照近期涨粉幅度最快的用户进行排序。</p>
+<p>优化上传文件限制：这次更新增加了对上传文件限制的用户端提示，并且前端也对视频文件进行了限制判断。</p>
+<p>简化长文编辑器：这是用户提出的建议，长文模块编辑器功能较多，不够精简，所以这次对不重要的功能进行删除简化。</p>
+<p>优化访客ip查询增加备用查询接口：新增加了备用的ip地址查询接口，并对第三方异步请求进行了时间约束。<br/>
+新增小程序部分页面开关约束：针对账户充值页面，付费贴页面，提现页面，进行了强制进入判断，当开关关闭后即使强制进入也无法渲染页面。</p>
+<p>新增备案跳转：后台管理系统登录页面，用户端H5页面都增加了备案跳转功能。</p>
+<h3 id="sec-8-51"><a id="v1160_281" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.16.0</h3>
+<p>具体日志：<a href="https://www.linfengtech.cn/version/v160.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v160.html</a><br/>
+本次更新的重磅功能众多，主要包括：全面接入百度智能云内容审核；各种帖子类型均支持图片评论；增加轻量级的Redis消息队列，异步解耦，进一步提升系统性能和用户交互体验!下面对这些重磅功能分别进行介绍。<br/><strong>百度智能云内容审核</strong>：本次全面接入了第三方内容审核，当然后台管理端可配置开启或关闭。审核类型包括：文本，图片，视频。用户发布的帖子，修改的头像，昵称，个性签名，圈子均可进行审核处理。另外，原先的后台自定义敏感词库依旧生效可用。</p>
+<p><strong>图片评论功能</strong>：这个需求提的客户比较多，所以这次更新，林风社交论坛标准版支持对所有帖子类型进行图片评论以及图片评论的回复。需要注意的是，图片评论和文本内容也会纳入百度智能云内容审核，保障平台的内容健康。<br/><strong>redis消息队列</strong>：本次更新加入该功能是因为第三方内容审核存在一定的时长，为了使用户交互更快，避免用户等待时间过长，所以在发帖和发评论时我们进行了文件审核异步处理。用户可以先看到自己发布的内容，紧接着系统会进一步审核处理业务。<br/>
+一定会有客户提问：为什么不选择rabbitMQ等实际的MQ中间件呢？因为引入后项目启动的复杂度，运维成本等对不熟悉技术的客户来说会大幅提高，这不符合我们轻量级产品定位的初衷，所以我们就选择现成的redis，不仅简单易用，而且处理消息时具有非常高的速度和低延迟，这对于我们处理需要快速响应的场景非常有利。</p>
+<h3 id="sec-8-52"><a id="v1150_291" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.15.0</h3>
+<p>日志发布的详情记录请查看：<a href="https://www.linfengtech.cn/version/v150.html" rel="noopener noreferrer" target="_blank">https://www.linfengtech.cn/version/v150.html</a><br/>
+本次更新是2024年的中期大版本。<br/>
+(1)访问统计模块<br/>
+该模块可以统计未登录的游客和已登录的注册用户。帮助管理员了解用户端实时访问客流。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+(2)UI升级<br/>
+我的账户，账户充值，积分签到，抽奖等页面都进行了页面更新升级，底部tabbar图标和高度也进行了更换和调整。<br/>
+这块调整很大，具体查看演示站点~<br/>
+(3)后台管理端<br/>
+评论管理，消息管理都进行了查询内容的细分。具体查看演示站点~<br/>
+（4）好友模块入口全局开关<br/>
+另外，V1.15.0版本新增了好友聊天模块的总开关，支持后台开启或关闭该模块。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+该按钮关闭后，消息页面，不再展示好友栏和私聊入口，用户主页也不再展示加好友的入口。审核的话最好也关闭一下。</p>
+<h3 id="sec-8-53"><a id="v1140_306" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.14.0</h3>
+<p>（1）微信公众号无感登录</p>
+<p>微信公众号端对于注册过的用户，下次登录时候可以直接跳过手机验证码，系统会自动判断用户openid，并自动登录。对于没有注册过的用户，还是需要先绑定手机号注册后登录。关注林风科技公众号即可体验林风社交论坛H5版本。<br/>
+（2）子评论折叠<br/>
+对于某条热门评论，可能会有很多子评论存在，这时系统固定展示前两条子评论，其他评论会被折叠，当用户点击显示更多回复按钮后，再请求更多子评论。<br/>
+（3）掉线重连接口<br/>
+原本加好友操作和同意好友的操作均由websocket实现，如果websocket掉线，会执行重连操作并重新发送websocket请求，现在我们修改了重连后的处理方式，改成了执行普通接口的方式处理加好友操作和同意好友的操作。这能确保消息是被发送的，即使对面无法及时收到消息。</p>
+<h3 id="sec-8-54"><a id="v1130_315" rel="noopener noreferrer" target="_blank"></a>更新内容介绍v1.13.0</h3>
+<p>（1）新增腾讯云短信验证码<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如果需要使用腾讯云短信，您需要前往腾讯云开通短信服务并配置参数。阿里云短信和腾讯云短信二选一即可。<br/>
+（2）微信公众号配置<br/>
+首先，开通一个服务号。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，先配置公众号的AppId和密钥。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，用户端前端也需要配置公众号的AppID哦。<br/><div class="img-placeholder">文档截图已省略</div><br/>
+如上图，在微信公众平台配置：业务域名、JS接口安全域名、网页授权域名。这三个域名都填你H5端的域名。例如：<a href="http://h5.xxx.com/" rel="noopener noreferrer" target="_blank">h5.xxx.com</a><br/>
+然后就是微信公众号支付绑定微信商户平台。参考：<a href="https://developers.weixin.qq.com/community/pay/article/doc/0004449a560590f759ed0cbf75d013" rel="noopener noreferrer" target="_blank">https://developers.weixin.qq.com/community/pay/article/doc/0004449a560590f759ed0cbf75d013</a><br/>
+（3）IOS端虚拟支付开关<br/><div class="img-placeholder">文档截图已省略</div><br/>
+由于微信小程序的IOS端，微信官方不支持IOS的虚拟支付业务，因此，本次更新增加了一个新的开关，如上图所示。选择关闭后，微信小程序IOS端不再展示会员、账户充值等入口。注意：该按钮只对微信小程序的IOS端生效。</p>
+<hr/></section>
+  <div class="footer">生成文件：单页离线文档站，可直接本地打开。</div>
+</main>
+</div>
+<script>
+const q = document.getElementById('search');
+const groups = [...document.querySelectorAll('.nav-group')];
+q.addEventListener('input', () => {
+  const v = q.value.trim().toLowerCase();
+  groups.forEach(g => {
+    const text = g.innerText.toLowerCase();
+    g.style.display = !v || text.includes(v) ? '' : 'none';
+  });
+});
+</script>
+</body>
+</html>

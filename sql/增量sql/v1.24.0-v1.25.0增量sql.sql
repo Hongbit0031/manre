@@ -1,0 +1,2 @@
+insert  into `sys_config`(`id`,`param_key`,`param_value`,`status`,`remark`) values (93,'loginType','0',1,'小程序登录策略 0仅openid登录1手机号登录');
+insert  into `sys_config`(`id`,`param_key`,`param_value`,`status`,`remark`) values (94,'loginInfoPop','0',1,'小程序登录是否要求填写头像昵称0否1是');

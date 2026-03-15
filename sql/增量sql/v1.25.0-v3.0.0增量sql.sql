@@ -1,0 +1,1 @@
+UPDATE lf_message SET `TYPE`=1 WHERE `TYPE`=3

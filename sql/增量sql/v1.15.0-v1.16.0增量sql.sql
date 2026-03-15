@@ -1,0 +1,4 @@
+
+ALTER TABLE lf_comment ADD `img` varchar(255) DEFAULT NULL COMMENT '评论图片';
+
+insert  into `sys_config`(`id`,`param_key`,`param_value`,`status`,`remark`) values (81,'defaultHead','https://pic.linfeng.tech/test/20220825/794e4d232bef4dcdac96497f9f487b48.jpeg',1,'用户默认注册头像'),(82,'baiduAppId','99999713',1,'百度智能云APPID'),(83,'baiduApiKey','xpIPzzzzFYR38zzzo6ryjzzY',1,'百度智能云ApiKey'),(84,'baiduSecretKey','xjipJAMHd879ZaqwerttEU8qqqqqqVCW',1,'百度智能云SecretKey'),(85,'baiduCensorTextOpen','0',1,'百度文本审核0关闭1开启'),(86,'baiduCensorImageOpen','0',1,'百度图片审核0关闭1开启'),(87,'baiduCensorVideoOpen','0',1,'百度视频审核0关闭1开启');

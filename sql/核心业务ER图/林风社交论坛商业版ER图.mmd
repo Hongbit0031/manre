@@ -1,0 +1,172 @@
+erDiagram
+    LF_USER {
+        int uid PK
+        varchar username
+        varchar email
+        varchar mobile
+        varchar password
+        int group_id
+        varchar avatar
+        int gender
+        varchar province
+        varchar city
+        int status
+        decimal money
+        int integral
+        int vip
+        datetime vip_expire_time
+        int level
+    }
+
+    LF_POST {
+        int id PK
+        int uid FK
+        int topic_id FK
+        int discuss_id FK
+        varchar title
+        longtext content
+        text media
+        int read_count
+        int type
+        datetime create_time
+        int status
+        int cut
+        decimal pay
+        int is_private
+    }
+
+    LF_TOPIC {
+        int id PK
+        int uid FK
+        int cate_id FK
+        varchar topic_name
+        varchar description
+        varchar cover_image
+        int top_type
+        int status
+        int user_num
+        int is_privacy
+    }
+
+    LF_CATEGORY {
+        int cate_id PK
+        varchar cate_name
+        int is_top
+        varchar cover_image
+    }
+
+    LF_COMMENT {
+        bigint id PK
+        int pid
+        int uid FK
+        int to_uid FK
+        bigint post_id FK
+        varchar content
+        tinyint status
+        datetime create_time
+    }
+
+    LF_FOLLOW {
+        int id PK
+        int uid FK
+        int follow_uid FK
+        datetime create_time
+    }
+
+    LF_FRIEND {
+        bigint id PK
+        bigint my_id FK
+        bigint friend_id FK
+        varchar notation
+        bigint session_id
+        varchar last_message
+        int unread
+    }
+
+    LF_CHAT_MESSAGE {
+        bigint id PK
+        bigint session_id
+        bigint sender_id FK
+        bigint receiver_id FK
+        varchar send_time
+        varchar content
+        varchar message_type
+        int is_withdrawn
+    }
+
+    LF_MESSAGE {
+        int m_id PK
+        int from_uid FK
+        int to_uid FK
+        int post_id FK
+        varchar title
+        varchar content
+        int status
+        int type
+        datetime create_time
+    }
+
+    LF_USER_TOPIC {
+        int uid FK
+        int topic_id FK
+        datetime create_time
+    }
+
+    LF_TOPIC_ADMIN {
+        int id PK
+        int topic_id FK
+        int uid FK
+        datetime create_time
+    }
+
+    LF_BILL {
+        int id PK
+        int uid FK
+        varchar link_id
+        tinyint pm
+        varchar title
+        varchar category
+        varchar type
+        decimal number
+        decimal balance
+    }
+
+    LF_COMMENT_THUMBS {
+        int id PK
+        int c_id FK
+        int uid FK
+        datetime create_time
+    }
+
+    LF_NOTICE {
+        bigint id PK
+        bigint sender_id FK
+        bigint receiver_id FK
+        varchar type
+        tinytext information
+        bit is_read
+    }
+
+    LF_USER ||--o{ LF_POST : "creates"
+    LF_USER ||--o{ LF_COMMENT : "writes"
+    LF_USER ||--o{ LF_TOPIC : "creates"
+    LF_USER ||--o{ LF_FOLLOW : "follows"
+    LF_USER ||--o{ LF_FRIEND : "befriends"
+    LF_USER ||--o{ LF_MESSAGE : "sends"
+    LF_USER }|--o{ LF_USER_TOPIC : "joins"
+    LF_USER }|--o{ LF_TOPIC_ADMIN : "administers"
+    LF_USER ||--o{ LF_BILL : "has"
+    LF_USER }|--o{ LF_COMMENT_THUMBS : "likes"
+    LF_USER ||--o{ LF_NOTICE : "receives"
+    
+    LF_POST }|--o{ LF_COMMENT : "has"
+    LF_POST }o--|| LF_TOPIC : "belongs to"
+    
+    LF_TOPIC }o--|| LF_CATEGORY : "belongs to"
+    LF_TOPIC }|--o{ LF_USER_TOPIC : "has members"
+    LF_TOPIC }|--o{ LF_TOPIC_ADMIN : "has admins"
+    
+    LF_COMMENT }o--o{ LF_COMMENT_THUMBS : "receives likes"
+    LF_COMMENT }o--o{ LF_COMMENT : "is reply to"
+    
+    LF_CHAT_MESSAGE }o--|| LF_FRIEND : "belongs to"

@@ -1,0 +1,59 @@
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        druid:
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            url: jdbc:mysql://localhost:3306/linfengcommunity?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+            username: root
+            password: root
+            initial-size: 10
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: false
+                wall:
+                    config:
+                        multi-statement-allow: true
+    jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
+
+# 本地文件存储路径
+# 注意：请在后台管理端配置文件存储信息
+# 私聊模块的数据都是走本地存储，其他功能模块可自主选择存储方式（不推荐用本地存储）
+linfeng:
+  path:
+    image: D:\linfengcommunity\image\
+    video: D:\linfengcommunity\video\
+    file: D:\linfengcommunity\file\
+
+#swagger基本配置
+swagger:
+  title: 慢热项目
+  version: 3.1.0
+  basic:
+      enable: false # true开启账号密码校验，false不开启校验
+      username: linfengbbs
+      password: linfeng12344321
+
+logging:
+  level:
+    io.linfeng: DEBUG
+    org.springframework.web: DEBUG
+    io.swagger.*: ERROR

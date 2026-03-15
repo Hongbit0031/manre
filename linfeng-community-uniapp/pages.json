@@ -1,0 +1,607 @@
+{
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#2c2c2c",
+		"borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/home-1.png",
+				"selectedIconPath": "static/tabbar/home.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/square/square",
+				"iconPath": "static/tabbar/quanzi-1.png",
+				"selectedIconPath": "static/tabbar/quanzi.png",
+				"text": "广场"
+			},
+			{
+				"pagePath": "pages/message/message",
+				"iconPath": "static/tabbar/msg-1.png",
+				"selectedIconPath": "static/tabbar/msg.png",
+				"text": "消息"
+			},
+			{
+				"pagePath": "pages/my/my",
+				"iconPath": "static/tabbar/my-1.png",
+				"selectedIconPath": "static/tabbar/my.png",
+				"text": "我的"
+			}
+		]
+	},
+	"pages": [{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "主页",
+				"backgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": true,
+				"navigationStyle":"custom"
+			}
+		}, {
+			"path": "pages/my/my",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/post/detail",
+			"style": {}
+		},
+		{
+			"path": "pages/post/confirm",
+			"style": {
+				"navigationBarTitleText": "付费确认"
+			}
+		},
+		{
+			"path": "pages/user/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		}, {
+			"path": "pages/user/home",
+			"style": {
+				"navigationBarTitleText": "个人主页",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/topic/detail",
+			"style": {
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"navigationBarTextStyle":"white"
+			}
+		}, {
+			"path": "pages/discuss/detail",
+			"style": {}
+		}, {
+			"path": "pages/my/discuss",
+			"style": {}
+		}, {
+			"path": "pages/my/topic",
+			"style": {
+				"navigationBarTitleText": "圈子列表",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/my/post",
+			"style": {}
+		}, {
+			"path": "pages/my/thumb",
+			"style": {}
+		}, {
+			"path": "pages/post/add",
+			"style": {
+				"navigationBarTitleText": "发布",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/message/message",
+			"style": {
+				"navigationStyle":"custom"
+			}
+		}, {
+			"path": "pages/message/list",
+			"style": {}
+		}, {
+			"path": "pages/my/fans",
+			"style": {
+				"navigationBarTitleText": "我的粉丝",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/my/follow",
+			"style": {
+				"navigationBarTitleText": "我的关注",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/topic/add/add",
+			"style": {
+				"navigationBarTitleText": "创建圈子",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/square/square",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationStyle":"custom"
+			}
+		}, {
+			"path": "pages/topic/class-list",
+			"style": {
+				"navigationBarTitleText": "全部圈子",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/discuss/add",
+			"style": {
+				"navigationBarTitleText": "新增话题",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/user/edit-info/edit",
+			"style": {
+				"navigationBarTitleText": "个人信息维护",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/user/edit-info/submit",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/topic/list",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/jump/jump",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		},{
+			"path": "pages/post/video-detail",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, 
+		{
+		    "path" : "pages/system/system",
+		    "style": {
+		    	"navigationBarTitleText": "系统消息",
+		    	"enablePullDownRefresh": true
+		    }
+		    
+		},
+		{
+			"path": "pages/discuss/list",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	    ,{
+            "path" : "pages/topic/choose-topic/choose-topic",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择圈子",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/webview/webview",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/topic/topic-user",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"navigationStyle":"custom"
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/sms-login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/topic/info-edit",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "编辑圈子",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/topic/add/category",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/topic/admin",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/vote/vote",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/discuss/choose-discuss/choose-discuss",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择话题",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/search/search",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "搜索",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        
+        ,{
+            "path" : "pages/pay/pay",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "余额充值",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/account/account",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的账户",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/bill/bill",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/sign/sign",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "签到",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+		    "path" : "pages/sign/integral",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "我的积分",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+        ,{
+            "path" : "pages/user/contact",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "联系客服",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/luck-draw/luck-draw",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "抽奖",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/luck-draw/prize-record",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "抽奖记录",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/go-login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/email-login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/register",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/protocol",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/report/report",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "举报中心",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/report/list",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的举报",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/report/detail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/vip/vip",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "会员",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,
+		{
+		    "path" : "pages/im/chat/chat",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "私聊",
+		        "enablePullDownRefresh": false,
+				"backgroundColor": "#333",
+				"app-plus":{
+					"titleNView":{
+						"buttons": [
+							{
+								"type": "menu"
+							}
+						]
+					}
+				}
+				
+		    }
+		    
+		},
+		{
+			"path": "pages/im/chat-list/chat-list",
+			"style": {
+				"navigationBarTitleText": "慢热IM",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		}
+        
+        ,{
+            "path" : "pages/im/notice-list/notice-list",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "通知消息",
+                "navigationStyle": "default"
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/edit-info/setting",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "系统设置",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        
+        ,{
+            "path" : "pages/account/cash-out",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/error/error",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "404",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/post/video",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+            
+        }
+    ],
+	"subPackages": [
+		{
+			"root": "subpages/content",
+			"pages": [
+				{
+					"path": "article/article",
+					"style": {
+						"navigationBarTitleText": "详情"
+					}
+				},
+				{
+				    "path" : "article/add",
+				    "style" :                                                                                    
+				    {
+				        "navigationBarTitleText": "发长文",
+				        "enablePullDownRefresh": false
+				    }
+				    
+				}
+			    
+                
+                ,{
+                    "path" : "member-management/member-management",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+                ,{
+                    "path" : "topic-apply/topic-apply",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "进圈答题",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+                ,{
+                    "path" : "apply-list/apply-list",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+                ,{
+                    "path" : "level/level",
+                    "style" :                                                                                    
+                {
+                    
+					"navigationBarTitleText": "用户经验等级"
+                }
+                
+                },
+                {
+                	"path" : "rank/rank",
+                	"style" : 
+                	{
+                		"navigationBarTitleText" : "排行榜"
+                	}
+                },
+                {
+                	"path" : "about/about",
+                	"style" : 
+                	{
+                		"navigationBarTitleText" : "关于我们"
+                	}
+                },
+				{
+					"path" : "setting/setting",
+					"style" : 
+					{
+						"navigationBarTitleText" : "设置"
+					}
+				},
+				{
+					"path" : "account-delete/account-delete",
+					"style" : 
+					{
+						"navigationBarTitleText" : ""
+					}
+				}
+            ]
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "慢热",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#FFFFFF"
+	}
+}
