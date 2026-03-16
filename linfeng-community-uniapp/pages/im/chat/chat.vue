@@ -128,7 +128,9 @@ const handleMessage = (message) => {
 		data: JSON.stringify(msg),
 		fail() {
 			uni.closeSocket()
-			websocket.initConnect()
+			websocket.initConnect().catch(err => {
+				console.warn('WebSocket连接失败', err)
+			})
 			setTimeout(function() {
 				retrySend(message)
 			}, 1500)

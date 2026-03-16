@@ -155,7 +155,9 @@
 			$store.state.loginUserInfo = res.result
 			uni.setStorageSync("userInfo", res.result)
 			//连接websocket
-			websocket.initConnect()
+			websocket.initConnect().catch(err => {
+				console.warn('WebSocket连接失败', err)
+			})
 			//获取好友列表
 			$store.dispatch('getFriendList')
 			///获取通知消息

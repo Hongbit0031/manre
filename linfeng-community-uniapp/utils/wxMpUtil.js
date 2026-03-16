@@ -60,7 +60,9 @@ export default {
 						$store.state.loginUserInfo = res2.result;
 						uni.setStorageSync("userInfo", res2.result)
 						//连接websocket
-						websocket.initConnect();
+						websocket.initConnect().catch(err => {
+							console.warn('WebSocket连接失败', err)
+						});
 						//获取好友列表
 						$store.dispatch('getFriendList');
 						///获取通知消息
