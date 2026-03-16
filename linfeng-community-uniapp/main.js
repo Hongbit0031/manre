@@ -1,5 +1,6 @@
 import { createSSRApp } from 'vue'
 import App from './App'
+import './static/runtime-config.js'
 
 // 引入 uView UI
 import uView from './uni_modules/vk-uview-ui';
@@ -50,5 +51,4 @@ export function createApp() {
 	
 	return { app }
 }
-
 
