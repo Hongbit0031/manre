@@ -171,6 +171,7 @@
 	} = getCurrentInstance()
 	const $H = proxy.$H
 	const $u = proxy.$u
+	const accountBgImage = `url('${proxy.$c.imgResource}/images/white-bg.png')`
 
 	// Reactive data
 	const is_hide = ref('0')
@@ -348,7 +349,7 @@
 		}
 
 		&__account-main {
-			background-image: url('https://demo.linfeng.tech/resource/images/white-bg.png');
+			background-image: v-bind(accountBgImage);
 			background-repeat: no-repeat;
 			background-size: 100%;
 			height: 100%;

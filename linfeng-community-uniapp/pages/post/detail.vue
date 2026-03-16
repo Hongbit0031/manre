@@ -396,6 +396,7 @@
 	const $f = proxy.$f;
 	const $loading = proxy.$loading;
 	const $IMG = ref(proxy.$IMG);
+	const shareFallbackImage = `${$c.imgResource}/images/user-bg.png`;
 
 	const btnStyle = ref({
 		borderRadius: '100rpx',
@@ -1145,7 +1146,7 @@
 		let content = postDetail.content;
 		if (postDetail.cut == 1) {
 			content = postDetail.brief;
-			imgURL = "https://demo.linfeng.tech/resource/images/user-bg.png"
+			imgURL = shareFallbackImage
 		}
 		return {
 			title: content,
@@ -1158,7 +1159,7 @@
 		let content = postDetail.content;
 		if (postDetail.cut == 1) {
 			content = postDetail.brief;
-			imgURL = "https://demo.linfeng.tech/resource/images/user-bg.png"
+			imgURL = shareFallbackImage
 		}
 		return {
 			title: content,

@@ -87,6 +87,13 @@
 		proxy
 	} = getCurrentInstance()
 	const $H = proxy.$H
+	const $c = proxy.$c
+	const signIconBg = `url('${$c.imgResource}/img/str2-sign.png')`
+	const signIconActiveBg = `url('${$c.imgResource}/img/yel-sign.png')`
+	const signRewardBg = `url('${$c.imgResource}/img/str-sign.png')`
+	const signDecorationBg = `url('${$c.imgResource}/img/lan-sign.png')`
+	const signCardBg = `url('${$c.imgResource}/img/card-sign.png')`
+	const signPopupBg = `url('${$c.imgResource}/img/pop-sign.png')`
 
 	const userInfo = ref({})
 	const integral = ref(0)
@@ -304,7 +311,7 @@
 			}
 
 			&__icon {
-				background-image: url('https://demo.linfeng.tech/resource/img/str2-sign.png');
+				background-image: v-bind(signIconBg);
 				background-repeat: no-repeat;
 				background-size: 100% 100%;
 				width: 56rpx;
@@ -312,11 +319,11 @@
 				margin: 10rpx 0;
 
 				&--active {
-					background-image: url('https://demo.linfeng.tech/resource/img/yel-sign.png');
+					background-image: v-bind(signIconActiveBg);
 				}
 
 				&--reward {
-					background-image: url('https://demo.linfeng.tech/resource/img/str-sign.png');
+					background-image: v-bind(signRewardBg);
 					width: 75rpx;
 					height: 56rpx;
 				}
@@ -340,7 +347,7 @@
 		}
 
 		.sign-card__decoration {
-			background-image: url('https://demo.linfeng.tech/resource/img/lan-sign.png');
+			background-image: v-bind(signDecorationBg);
 			background-repeat: no-repeat;
 			background-size: 100% 100%;
 			width: 558rpx;
@@ -376,7 +383,7 @@
 				text-align: center;
 				line-height: 116rpx;
 				margin-right: 19rpx;
-				background-image: url('https://demo.linfeng.tech/resource/img/card-sign.png');
+				background-image: v-bind(signCardBg);
 			}
 
 			&__unit {
@@ -454,7 +461,7 @@
 			}
 
 			&__content {
-				background-image: url('https://demo.linfeng.tech/resource/img/pop-sign.png');
+				background-image: v-bind(signPopupBg);
 				background-repeat: no-repeat;
 				background-size: 100% 100%;
 				width: 420rpx;

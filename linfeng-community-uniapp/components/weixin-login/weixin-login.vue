@@ -67,7 +67,7 @@ const $c = proxy.$c
 const avatarUrl = ref('')
 const nickName = ref('')
 const openid = ref('')
-const default_avatar = ref('https://demo.linfeng.tech/resource/images/default_avatar.png')
+const default_avatar = ref(`${$c.imgResource}/images/default_avatar.png`)
 
 // 方法
 const onChooseAvatar = (e) => {

@@ -236,7 +236,7 @@
 	const checkedMsgUid = ref('')
 	const adminInfo = reactive({
 		username: '系统通知',
-		avatar: 'https://demo.linfeng.tech/resource/images/sys.png',
+		avatar: `${proxy.$c.imgResource}/images/sys.png`,
 		uid: 1,
 	})
 	const pageTab = ref([{ name: '消息' }, { name: '好友' }])

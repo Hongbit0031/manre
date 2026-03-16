@@ -53,6 +53,8 @@ import { onLoad, onReachBottom } from '@dcloudio/uni-app'
 
 const { proxy } = getCurrentInstance()
 const $H = proxy.$H
+const $c = proxy.$c
+const integralHeaderBg = `url('${$c.imgResource}/images/interal-bg.png')`
 
 const navList = ref([
 	{ name: "积分明细" }
@@ -120,7 +122,7 @@ function getUserInfo() {
 <style lang="scss" scoped>
 .integral {
   &__header {
-    background-image: url('https://demo.linfeng.tech/resource/images/interal-bg.png');
+    background-image: v-bind(integralHeaderBg);
     background-repeat: no-repeat;
     background-size: 100% 100%;
     width: 100%;

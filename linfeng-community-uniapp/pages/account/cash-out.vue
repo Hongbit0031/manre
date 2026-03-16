@@ -97,12 +97,12 @@
 	const canSubmit = ref(true)
 	const items = ref([{
 			id: 0,
-			icon: 'https://demo.linfeng.tech/resource/img/alipay.png',
+			icon: `${$c.imgResource}/img/alipay.png`,
 			title: '支付宝',
 		},
 		{
 			id: 1,
-			icon: 'https://demo.linfeng.tech/resource/img/weixin.png',
+			icon: `${$c.imgResource}/img/weixin.png`,
 			title: '微信',
 		}
 	])

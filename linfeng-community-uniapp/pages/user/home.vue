@@ -278,7 +278,7 @@
 	const message = ref('')
 	const openPop = ref(false)
 	const appName = ref($c.miniappName)
-	const backgroundImage = ref('https://demo.linfeng.tech/resource/images/user-bg.png')
+	const backgroundImage = ref(`${$c.imgResource}/images/user-bg.png`)
 
 	onLoad((options) => {
 		navHeight.value = getApp().globalData.navHeight
