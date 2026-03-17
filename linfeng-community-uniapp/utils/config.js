@@ -3,7 +3,12 @@ const runtimeConfig =
 
 const miniappName = runtimeConfig.miniappName || "慢热"; // 站点标题用于分享时的标题
 const shareH5Url = runtimeConfig.shareH5Url || "https://m.scs.baby/#/"; // H5分享路径
-const baseUrl = runtimeConfig.baseUrl || "localhost:8080"; // 你本地测试的接口地址
+let defaultBaseUrl = "localhost:8080";
+// 小程序端默认使用线上域名，避免运行时配置缺失时回退到 localhost。
+// #ifdef MP-WEIXIN
+defaultBaseUrl = "m.scs.baby";
+// #endif
+const baseUrl = runtimeConfig.baseUrl || defaultBaseUrl; // 接口地址
 const apiProtocol = runtimeConfig.apiProtocol || (baseUrl === "localhost:8080" ? "http" : "https");
 const wsProtocol = runtimeConfig.wsProtocol || (apiProtocol === "https" ? "wss" : "ws");
 const domain = runtimeConfig.domain || `${apiProtocol}://${baseUrl}/app/`; // 接口服务地址

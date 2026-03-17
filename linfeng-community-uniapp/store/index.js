@@ -155,11 +155,13 @@ const store = createStore({
 		},
 		//获取通知消息
 		getNoticeList({ state }) {
-			request.get('notice/list').then(res => {
+			return request.get('notice/list').then(res => {
 				if (res.code == 0) {
 					state.totalUnread.notice = res.result.count
 					state.noticeList = res.result.noticeList
 				}
+			}).catch(err => {
+				console.warn('getNoticeList request failed', err)
 			})
 		},
 		//设置好友会话消息的session_id
@@ -178,13 +180,15 @@ const store = createStore({
 		},
 
 		getFriendList({ state, dispatch }) {
-			request.get('friend/list').then(res => {
+			return request.get('friend/list').then(res => {
 				if (res.code == 0) {
 					state.friendList = res.result
 					dispatch('initSessionList')
 					dispatch('initFriendListShow');
 					dispatch('initFriendSessionId');
 				}
+			}).catch(err => {
+				console.warn('getFriendList request failed', err)
 			})
 		},
 		initFriendListShow({ state, getters }) {
@@ -209,10 +213,12 @@ const store = createStore({
 			}
 		},
 		clearUnread(context, param) {
-			request.post('chat/clearUnread', param).then(res => {
+			return request.post('chat/clearUnread', param).then(res => {
 				if (res.code == 0) {
 					// console.log('已清除未读标记')
 				}
+			}).catch(err => {
+				console.warn('clearUnread request failed', err)
 			})
 		},
 	}

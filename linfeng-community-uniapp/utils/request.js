@@ -49,12 +49,17 @@ const request = (options = {}) => {
 				}
 				resolve(response.data)
 			} else {
+				console.warn('请求返回异常状态', options.url, response)
 				uni.showToast({
 					title: '请求异常',
 					icon: "none"
 				})
 				reject(response)
 			}
+		}
+		options.fail = (error) => {
+			console.warn('请求失败', options.url, error)
+			reject(error)
 		}
 
 		uni.request(options)

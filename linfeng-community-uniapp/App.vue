@@ -69,6 +69,8 @@
 			
 			this.$H.get('user/isOpen').then(res => {
 				this.globalData.isOpen = res.result;
+			}).catch(err => {
+				console.warn('获取站点开关失败', err);
 			});
 			//访问统计
 			var terminal='other'
@@ -83,7 +85,9 @@
 			// #endif
 			this.$H.post('user/visitor',{
 				'terminal':terminal
-			}).then(res => {});
+			}).then(res => {}).catch(err => {
+				console.warn('访问统计上报失败', err);
+			});
 		},
 		
 		onShow: function() {
@@ -115,9 +119,13 @@
 				});
         		}
 				//获取好友列表
-				$store.dispatch('getFriendList');
+				$store.dispatch('getFriendList').catch(err => {
+					console.warn('获取好友列表失败', err);
+				});
 				///获取通知消息
-				$store.dispatch('getNoticeList');
+				$store.dispatch('getNoticeList').catch(err => {
+					console.warn('获取通知列表失败', err);
+				});
 			}
 		},
 		onPageNotFound() {
